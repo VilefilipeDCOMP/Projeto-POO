@@ -66,11 +66,13 @@ class MyLabel(QtWidgets.QLabel):
         qp.setBrush(br)
         qp.drawRect(0,0,width-5,height - 5)
         # print(PlayerScene_x)
+        qp.setPen(QtGui.QColor(255,255,255))  
         qp.drawRect(self.PlayerScene_posx, self.PlayerScene_posy, self.PlayerScene_x, self.PlayerScene_y)
         qp.drawRect(width - 205 - 50, height - 205 - 50, 200, 200)
 
         br = QtGui.QBrush(QtGui.QColor(255,0,0,255))
         qp.setBrush(br)
+        qp.setPen(QtGui.QColor(255,255,255))
         qp.setFont(QtGui.QFont("Arial", 15))
         qp.drawText(width - 205 - 50 + 80, height - 205 - 50 + 25, "NEXT")
         
