@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from MainWindow import Ui_MainWindow
+from Tetramino import *
 import random
 
 class Bullet:
@@ -15,74 +16,11 @@ class Bullet:
 
     def getX(self):
         return self.x
-    
-class box:
-    size = 30
-    x = 0
-    y = 0
-
-    def __init__ (self, QColor): # QtGui.QColor(0,0,0,255)
-        self.br = QtGui.QBrush(QColor)
-        self.y = 50
-        self.x = 50
-
-    def changeXY(self, x, y):
-        self.x = x
-        self.y = y
-
-    def getY(self):  
-        return self.y
-
-    def getX(self):
-        return self.x
-    
-class tetriPeca_Barra:
-    cor = QtGui.QColor(255,0,0,255)
-    b = [box(cor), box(cor), box(cor), box(cor)]
-
-    def changeXY(self, x, y):
-        self.b[0].changeXY(x - box.size, y)
-        self.b[1].changeXY(x, y)
-        self.b[2].changeXY(x + box.size, y)
-        self.b[3].changeXY(x + (box.size) * 2, y)
-
-    def __init__(self, x, y):
-        self.changeXY(x,y)
-        self.xmax = self.b[3]
-        self.xmin = self.b[0]
-        self.ymin = self.b[1]
-        self.ymax = self.b[1]
-
-    def draw(self, qp):
-        for block in self.b:
-            qp.setBrush(QtGui.QBrush(self.cor))
-            qp.drawRect(block.getX(), block.getY(), box.size, box.size)
-
-class tetriPeca_Quadrada: 
-    cor = QtGui.QColor(0,255,0,255)
-    b = [box(cor), box(cor), box(cor), box(cor)]
-
-    def changeXY(self, x, y):
-        self.b[0].changeXY(x - box.size, y)
-        self.b[1].changeXY(x, y)
-        self.b[2].changeXY(x, y + box.size)
-        self.b[3].changeXY(x - box.size, y + box.size)
-
-    def __init__(self, x, y):
-        self.changeXY(x,y)
-        self.xmax = self.b[1]
-        self.xmin = self.b[0]
-        self.ymin = self.b[0]
-        self.ymax = self.b[3]
-
-    def draw(self, qp):
-        for block in self.b:
-            qp.setBrush(QtGui.QBrush(self.cor))
-            qp.drawRect(block.getX(), block.getY(), box.size, box.size)
-     
 
 class MyLabel(QtWidgets.QLabel):
-    pecas = [tetriPeca_Barra(451 + int(451/3), 100), tetriPeca_Quadrada(451 + int(451/3), 100)]
+    posInicial_x = 451 + int(451/3)
+    posInicial_y = 100
+    pecas = [tetriPeca_Barra(posInicial_x, posInicial_y), tetriPeca_Quadrada(posInicial_x, posInicial_y), tetriPeca_L(posInicial_x, posInicial_y) , tetriPeca_LInv(posInicial_x, posInicial_y), tetriPeca_S(posInicial_x, posInicial_y), tetriPeca_SInv(posInicial_x, posInicial_y), tetriPeca_Triangulo(posInicial_x, posInicial_y)]
     # atual = tetriPeca(451 + int(451/3), 100)
     # atual = tetriPeca_Quadrada(451 + int(451/3), 100)
     PlayerScene_x = 360
@@ -102,7 +40,7 @@ class MyLabel(QtWidgets.QLabel):
         except:
             print("deu erro")
             pass
-        n = random.randint(0, 1)
+        n = random.randint(0, len(self.pecas) - 1)
         # print(self.pecas[n])
         self.atual = self.pecas[n]
 
@@ -143,9 +81,9 @@ class MyLabel(QtWidgets.QLabel):
         self.atual.draw(qp)
 
     def possivelY(self, soma):
-        if (self.atual.ymax.getY() + soma != self.PlayerScene_y+self.PlayerScene_posy):
-            aux = 0
-            for bloco in self.atual.b:
+        aux = 0
+        for bloco in self.atual.b:
+            if (bloco.getY() + soma != self.PlayerScene_y+self.PlayerScene_posy):
                 try:
                     self.blocosFixos.index((bloco.x, bloco.y + soma))
                     return False
@@ -154,9 +92,23 @@ class MyLabel(QtWidgets.QLabel):
                     print(aux)
                     if (aux == 4):
                         return True
-            return True
-        else:
-            return False
+            else:
+                return False
+    
+        # if (self.atual.ymax.getY() + soma != self.PlayerScene_y+self.PlayerScene_posy):
+        #     aux = 0
+        #     for bloco in self.atual.b:
+        #         try:
+        #             self.blocosFixos.index((bloco.x, bloco.y + soma))
+        #             return False
+        #         except ValueError:
+        #             aux += 1
+        #             print(aux)
+        #             if (aux == 4):
+        #                 return True
+        #     return True
+        # else:
+        #     return False
         
     def possivelXPos(self):
         if (self.atual.xmax.getX() + 30 != self.PlayerScene_x+self.PlayerScene_posx) :
