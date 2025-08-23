@@ -19,280 +19,214 @@ class box:
 
     def getX(self):
         return self.x
-
-class tetriPeca_Barra:
-    cor = QtGui.QColor(15,155,215,255)
+    
+class Peca:
+    cor = 0
     b = [box(cor), box(cor), box(cor), box(cor)]
+    bTemp = [box(cor), box(cor), box(cor), box(cor)]
     rot = 0
 
-    def changeXY(self, x, y):
-        # x = self.b[0].getX()
-        # y = self.b[0].getY()
-        if self.rot == 1:
-            self.b[0].changeXY(x, y - box.size)
-            self.b[1].changeXY(x, y)
-            self.b[2].changeXY(x, y + box.size)
-            self.b[3].changeXY(x, y + (box.size) * 2)
-        else:
-            self.b[0].changeXY(x - box.size, y)
-            self.b[1].changeXY(x, y)
-            self.b[2].changeXY(x + box.size, y)
-            self.b[3].changeXY(x + (box.size) * 2, y)
-
     def __init__(self, x, y):
-        self.changeXY(x,y)
-        self.xmax = self.b[3]
-        self.xmin = self.b[0]
-        self.ymin = self.b[1]
-        self.ymax = self.b[1]
-
-    def rotacionar(self):
-        if (self.rot == 0):
-            self.rot = 1
-        else:
-            self.rot = 0
-        print(self.rot)
+        self.changeXY(x,y, self.rot, self.b)
 
     def draw(self, qp):
+        # for block in self.bTemp:
+        #     qp.setBrush(QtGui.QBrush(QtGui.QColor(0,0,0,0)))
+        #     qp.drawRect(block.getX(), block.getY(), box.size, box.size)
         for block in self.b:
             qp.setBrush(QtGui.QBrush(self.cor))
             qp.drawRect(block.getX(), block.getY(), box.size, box.size)
 
-class tetriPeca_Quadrada: 
+    def rotacionar(self):
+        if (self.rot == 3):
+            self.rot = 0 
+        else:
+            self.rot += 1
+
+    def verificarXPos(self, setBlocos, blocosFixos, PlayerScene_x, PlayerScene_posx):
+        aux = 0
+        for bloco in setBlocos:
+            if (bloco.getX() + 30 != PlayerScene_x+PlayerScene_posx):
+                try:
+                    blocosFixos.index((bloco.x + 30, bloco.y))
+                    return False
+                except ValueError:
+                    aux += 1
+                    if (aux == 4):
+                        return True
+            else:
+                return False
+
+    def verificarXNeg(self, setBlocos, blocosFixos, PlayerScene_x, PlayerScene_posx):
+        aux = 0
+        for bloco in setBlocos:
+            if (bloco.getX() != PlayerScene_posx):
+                try:
+                    blocosFixos.index((bloco.x - 30, bloco.y))
+                    return False
+                except ValueError:
+                    aux += 1
+                    if (aux == 4):
+                        return True
+            else:
+                print(bloco.getX(), PlayerScene_posx)   
+                return False
+    
+    def rotacionarTest(self, blocosFixos, PlayerScene_x, PlayerScene_posx):
+        test_rot = self.rot
+        if (test_rot == 3):
+            test_rot = 0 
+        else:
+            test_rot += 1
+
+        x = self.b[1].getX()
+        y = self.b[1].getY()
+
+        self.changeXY(x, y, test_rot, self.bTemp)
+
+        print(self.verificarXNeg(self.bTemp, blocosFixos, PlayerScene_x, PlayerScene_posx), self.verificarXPos(self.bTemp, blocosFixos, PlayerScene_x, PlayerScene_posx))
+
+        if (self.verificarXNeg(self.bTemp, blocosFixos, PlayerScene_x, PlayerScene_posx) == True and self.verificarXPos(self.bTemp, blocosFixos, PlayerScene_x, PlayerScene_posx) == True):
+            return True
+        else:
+            return False
+
+
+class tetriPeca_Barra (Peca):
+    cor = QtGui.QColor(15,155,215,255)
+
+    def changeXY(self, x, y, rotAtual, setBlocos):
+        if (rotAtual == 1) or (rotAtual == 3):
+            setBlocos[0].changeXY(x, y - box.size)
+            setBlocos[1].changeXY(x, y)
+            setBlocos[2].changeXY(x, y + box.size)
+            setBlocos[3].changeXY(x, y + (box.size) * 2)
+        else:
+            setBlocos[0].changeXY(x - box.size, y)
+            setBlocos[1].changeXY(x, y)
+            setBlocos[2].changeXY(x + box.size, y)
+            setBlocos[3].changeXY(x + (box.size) * 2, y)
+
+
+class tetriPeca_Quadrada (Peca): 
     cor = QtGui.QColor(227,159,2,255)
-    b = [box(cor), box(cor), box(cor), box(cor)]
-    rot = 0
 
-    def changeXY(self, x, y):
-        self.b[0].changeXY(x - box.size, y)
-        self.b[1].changeXY(x, y)
-        self.b[2].changeXY(x, y + box.size)
-        self.b[3].changeXY(x - box.size, y + box.size)
-
-    def __init__(self, x, y):
-        self.changeXY(x,y)
-        self.xmax = self.b[1]
-        self.xmin = self.b[0]
-        self.ymin = self.b[0]
-        self.ymax = self.b[3]
+    def changeXY(self, x, y, rotAtual, setBlocos):
+        setBlocos[0].changeXY(x - box.size, y)
+        setBlocos[1].changeXY(x, y)
+        setBlocos[2].changeXY(x, y + box.size)
+        setBlocos[3].changeXY(x - box.size, y + box.size)
     
     def rotacionar(self):
         pass
 
-    def draw(self, qp):
-        for block in self.b:
-            qp.setBrush(QtGui.QBrush(self.cor))
-            qp.drawRect(block.getX(), block.getY(), box.size, box.size)
 
-class tetriPeca_L: 
+class tetriPeca_L (Peca): 
     cor = QtGui.QColor(33,65,198,255)
-    b = [box(cor), box(cor), box(cor), box(cor)]
-    rot = 0
 
-    def changeXY(self, x, y):
-        match self.rot:
+    def changeXY(self, x, y, rotAtual, setBlocos):
+        match rotAtual:
             case 0:
-                self.b[0].changeXY(x - box.size, y)
-                self.b[1].changeXY(x, y)
-                self.b[2].changeXY(x, y - box.size)
-                self.b[3].changeXY(x, y - (box.size*2))
+                setBlocos[0].changeXY(x - box.size, y)
+                setBlocos[1].changeXY(x, y)
+                setBlocos[2].changeXY(x, y - box.size)
+                setBlocos[3].changeXY(x, y - (box.size*2))
             case 1:
-                self.b[0].changeXY(x, y  - box.size)
-                self.b[1].changeXY(x, y)
-                self.b[2].changeXY(x + box.size, y)
-                self.b[3].changeXY(x + (box.size*2), y)
+                setBlocos[0].changeXY(x, y  - box.size)
+                setBlocos[1].changeXY(x, y)
+                setBlocos[2].changeXY(x + box.size, y)
+                setBlocos[3].changeXY(x + (box.size*2), y)
             case 2:
-                self.b[0].changeXY(x + box.size, y)
-                self.b[1].changeXY(x, y)
-                self.b[2].changeXY(x, y + box.size)
-                self.b[3].changeXY(x, y + (box.size*2))
+                setBlocos[0].changeXY(x + box.size, y)
+                setBlocos[1].changeXY(x, y)
+                setBlocos[2].changeXY(x, y + box.size)
+                setBlocos[3].changeXY(x, y + (box.size*2))
             case 3:
-                self.b[0].changeXY(x, y  + box.size)
-                self.b[1].changeXY(x, y)
-                self.b[2].changeXY(x - box.size, y)
-                self.b[3].changeXY(x - (box.size*2), y)
+                setBlocos[0].changeXY(x, y  + box.size)
+                setBlocos[1].changeXY(x, y)
+                setBlocos[2].changeXY(x - box.size, y)
+                setBlocos[3].changeXY(x - (box.size*2), y)
 
-    def __init__(self, x, y):
-        self.changeXY(x,y)
-        self.xmax = self.b[1]
-        self.xmin = self.b[0]
-        self.ymin = self.b[1]
-        self.ymax = self.b[3]
-    
-    def rotacionar(self):
-        if (self.rot == 3):
-            self.rot = 0 
-        else:
-            self.rot += 1
-
-    def draw(self, qp):
-        for block in self.b:
-            qp.setBrush(QtGui.QBrush(self.cor))
-            qp.drawRect(block.getX(), block.getY(), box.size, box.size)
-
-class tetriPeca_LInv: 
+class tetriPeca_LInv (Peca): 
     cor = QtGui.QColor(227,91,2,255)
-    b = [box(cor), box(cor), box(cor), box(cor)]
-    rot = 0
 
-    def changeXY(self, x, y):
-        match self.rot:
+    def changeXY(self, x, y, rotAtual, setBlocos):
+        match rotAtual:
             case 0:
-                self.b[0].changeXY(x + box.size, y)
-                self.b[1].changeXY(x, y)
-                self.b[2].changeXY(x, y - box.size)
-                self.b[3].changeXY(x, y - (box.size*2))
+                setBlocos[0].changeXY(x + box.size, y)
+                setBlocos[1].changeXY(x, y)
+                setBlocos[2].changeXY(x, y - box.size)
+                setBlocos[3].changeXY(x, y - (box.size*2))
             case 1:
-                self.b[0].changeXY(x, y  + box.size)
-                self.b[1].changeXY(x, y)
-                self.b[2].changeXY(x + box.size, y)
-                self.b[3].changeXY(x + (box.size*2), y)
+                setBlocos[0].changeXY(x, y  + box.size)
+                setBlocos[1].changeXY(x, y)
+                setBlocos[2].changeXY(x + box.size, y)
+                setBlocos[3].changeXY(x + (box.size*2), y)
             case 2:
-                self.b[0].changeXY(x - box.size, y)
-                self.b[1].changeXY(x, y)
-                self.b[2].changeXY(x, y + box.size)
-                self.b[3].changeXY(x, y + (box.size*2))
+                setBlocos[0].changeXY(x - box.size, y)
+                setBlocos[1].changeXY(x, y)
+                setBlocos[2].changeXY(x, y + box.size)
+                setBlocos[3].changeXY(x, y + (box.size*2))
             case 3:
-                self.b[0].changeXY(x, y  - box.size)
-                self.b[1].changeXY(x, y)
-                self.b[2].changeXY(x - box.size, y)
-                self.b[3].changeXY(x - (box.size*2), y)
+                setBlocos[0].changeXY(x, y  - box.size)
+                setBlocos[1].changeXY(x, y)
+                setBlocos[2].changeXY(x - box.size, y)
+                setBlocos[3].changeXY(x - (box.size*2), y)
 
-    def __init__(self, x, y):
-        self.changeXY(x,y)
-        self.xmax = self.b[0]
-        self.xmin = self.b[1]
-        self.ymin = self.b[1]
-        self.ymax = self.b[3]
-    
-    def rotacionar(self):
-        if (self.rot == 3):
-            self.rot = 0 
-        else:
-            self.rot += 1
-
-    def draw(self, qp):
-        for block in self.b:
-            qp.setBrush(QtGui.QBrush(self.cor))
-            qp.drawRect(block.getX(), block.getY(), box.size, box.size)
-
-class tetriPeca_S: 
+class tetriPeca_S (Peca):
     cor = QtGui.QColor(89,177,1,255)
-    b = [box(cor), box(cor), box(cor), box(cor)]
-    rot = 0
 
-    def changeXY(self, x, y):
-        match self.rot:
+    def changeXY(self, x, y, rotAtual, setBlocos):
+        match rotAtual:
             case 0 | 2:
-                self.b[0].changeXY(x - box.size, y)
-                self.b[1].changeXY(x, y)
-                self.b[2].changeXY(x, y - box.size)
-                self.b[3].changeXY(x + box.size, y - box.size)
+                setBlocos[0].changeXY(x - box.size, y)
+                setBlocos[1].changeXY(x, y)
+                setBlocos[2].changeXY(x, y - box.size)
+                setBlocos[3].changeXY(x + box.size, y - box.size)
             case 1 | 3:
-                self.b[0].changeXY(x, y  - box.size)
-                self.b[1].changeXY(x, y)
-                self.b[2].changeXY(x + box.size, y)
-                self.b[3].changeXY(x + box.size, y + box.size)
+                setBlocos[0].changeXY(x, y  - box.size)
+                setBlocos[1].changeXY(x, y)
+                setBlocos[2].changeXY(x + box.size, y)
+                setBlocos[3].changeXY(x + box.size, y + box.size)
 
-    def __init__(self, x, y):
-        self.changeXY(x,y)
-        self.xmax = self.b[3]
-        self.xmin = self.b[0]
-        self.ymin = self.b[2]
-        self.ymax = self.b[1]
-
-    def rotacionar(self):
-        if (self.rot == 3):
-            self.rot = 0 
-        else:
-            self.rot += 1
-
-    def draw(self, qp):
-        for block in self.b:
-            qp.setBrush(QtGui.QBrush(self.cor))
-            qp.drawRect(block.getX(), block.getY(), box.size, box.size)
-
-class tetriPeca_SInv: 
+class tetriPeca_SInv (Peca): 
     cor = QtGui.QColor(215,15,55,255)
-    b = [box(cor), box(cor), box(cor), box(cor)]
-    rot = 0
 
-    def changeXY(self, x, y):
-        match self.rot:
+    def changeXY(self, x, y, rotAtual, setBlocos):
+        match rotAtual:
             case 0 | 2:
-                self.b[0].changeXY(x + box.size, y)
-                self.b[1].changeXY(x, y)
-                self.b[2].changeXY(x, y - box.size)
-                self.b[3].changeXY(x - box.size, y - box.size)
+                setBlocos[0].changeXY(x + box.size, y)
+                setBlocos[1].changeXY(x, y)
+                setBlocos[2].changeXY(x, y - box.size)
+                setBlocos[3].changeXY(x - box.size, y - box.size)
             case 1 | 3:
-                self.b[0].changeXY(x, y  - box.size)
-                self.b[1].changeXY(x, y)
-                self.b[2].changeXY(x - box.size, y)
-                self.b[3].changeXY(x - box.size, y + box.size)
+                setBlocos[0].changeXY(x, y  - box.size)
+                setBlocos[1].changeXY(x, y)
+                setBlocos[2].changeXY(x - box.size, y)
+                setBlocos[3].changeXY(x - box.size, y + box.size)
 
-    def __init__(self, x, y):
-        self.changeXY(x,y)
-        self.xmax = self.b[0]
-        self.xmin = self.b[3]
-        self.ymin = self.b[3]
-        self.ymax = self.b[1]
-    
-    def rotacionar(self):
-        if (self.rot == 3):
-            self.rot = 0 
-        else:
-            self.rot += 1
-        print(self.rot)
-
-    def draw(self, qp):
-        for block in self.b:
-            qp.setBrush(QtGui.QBrush(self.cor))
-            qp.drawRect(block.getX(), block.getY(), box.size, box.size)
-
-class tetriPeca_Triangulo: 
+class tetriPeca_Triangulo (Peca): 
     cor = QtGui.QColor(175,41,138,255)
-    b = [box(cor), box(cor), box(cor), box(cor)]
-    rot = 0
 
-    def changeXY(self, x, y):
-        match self.rot:
+    def changeXY(self, x, y, rotAtual, setBlocos):
+        match rotAtual:
             case 0:
-                self.b[0].changeXY(x - box.size, y)
-                self.b[1].changeXY(x, y)
-                self.b[2].changeXY(x + box.size, y)
-                self.b[3].changeXY(x, y + box.size)
+                setBlocos[0].changeXY(x - box.size, y)
+                setBlocos[1].changeXY(x, y)
+                setBlocos[2].changeXY(x + box.size, y)
+                setBlocos[3].changeXY(x, y + box.size)
             case 1:
-                self.b[0].changeXY(x, y  - box.size)
-                self.b[1].changeXY(x, y)
-                self.b[2].changeXY(x, y + box.size)
-                self.b[3].changeXY(x - box.size, y)
+                setBlocos[0].changeXY(x, y  - box.size)
+                setBlocos[1].changeXY(x, y)
+                setBlocos[2].changeXY(x, y + box.size)
+                setBlocos[3].changeXY(x - box.size, y)
             case 2:
-                self.b[0].changeXY(x + box.size, y)
-                self.b[1].changeXY(x, y)
-                self.b[2].changeXY(x - box.size, y)
-                self.b[3].changeXY(x, y - box.size)
+                setBlocos[0].changeXY(x + box.size, y)
+                setBlocos[1].changeXY(x, y)
+                setBlocos[2].changeXY(x - box.size, y)
+                setBlocos[3].changeXY(x, y - box.size)
             case 3:
-                self.b[0].changeXY(x, y + box.size)
-                self.b[1].changeXY(x, y)
-                self.b[2].changeXY(x, y  - box.size)
-                self.b[3].changeXY(x + box.size, y)
-
-
-    def __init__(self, x, y):
-        self.changeXY(x,y)
-        self.xmax = self.b[2]
-        self.xmin = self.b[0]
-        self.ymin = self.b[1]
-        self.ymax = self.b[3]
-
-    def rotacionar(self):
-        if (self.rot == 3):
-            self.rot = 0 
-        else:
-            self.rot += 1
-        print(self.rot)
-
-    def draw(self, qp):
-        for block in self.b:
-            qp.setBrush(QtGui.QBrush(self.cor))
-            qp.drawRect(block.getX(), block.getY(), box.size, box.size)
+                setBlocos[0].changeXY(x, y + box.size)
+                setBlocos[1].changeXY(x, y)
+                setBlocos[2].changeXY(x, y  - box.size)
+                setBlocos[3].changeXY(x + box.size, y)

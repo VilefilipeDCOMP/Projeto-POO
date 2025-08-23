@@ -1,11 +1,11 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from MainWindow import Ui_MainWindow
 from Tetramino import *
 import random
 
 class MyLabel(QtWidgets.QLabel):
     posInicial_x = 451 + int(451/3)
     posInicial_y = 100
+    # pecas = [tetriPeca_L(posInicial_x, posInicial_y) , tetriPeca_LInv(posInicial_x, posInicial_y)]
     pecas = [tetriPeca_Barra(posInicial_x, posInicial_y), tetriPeca_Quadrada(posInicial_x, posInicial_y), tetriPeca_L(posInicial_x, posInicial_y) , tetriPeca_LInv(posInicial_x, posInicial_y), tetriPeca_S(posInicial_x, posInicial_y), tetriPeca_SInv(posInicial_x, posInicial_y), tetriPeca_Triangulo(posInicial_x, posInicial_y)]
     PlayerScene_x = 360
     PlayerScene_y = 620
@@ -17,10 +17,8 @@ class MyLabel(QtWidgets.QLabel):
     def pecaAleatoria(self):
         try:
             for bloco in self.atual.b:
-                # print(f'{bloco.getX(), bloco.getY()}')
                 self.blocosFixos.append((bloco.getX(), bloco.getY()))
-                # print(self.blocosFixos)
-            self.atual.changeXY(451 + int(451/3), 100)
+            self.atual.changeXY(451 + int(451/3), 100, self.atual.rot, self.atual.b)
         except:
             pass
         n = random.randint(0, len(self.pecas) - 1)
@@ -78,38 +76,10 @@ class MyLabel(QtWidgets.QLabel):
                         return True
             else:
                 return False
-        
-    def possivelXPos(self):
-        aux = 0
-        for bloco in self.atual.b:
-            if (bloco.getX() + 30 != self.PlayerScene_x+self.PlayerScene_posx):
-                try:
-                    self.blocosFixos.index((bloco.x + 30, bloco.y))
-                    return False
-                except ValueError:
-                    aux += 1
-                    if (aux == 4):
-                        return True
-            else:
-                return False
-        
-    def possivelXNeg(self):
-        aux = 0
-        for bloco in self.atual.b:
-            if (bloco.getX() != self.PlayerScene_posx):
-                try:
-                    self.blocosFixos.index((bloco.x - 30, bloco.y))
-                    return False
-                except ValueError:
-                    aux += 1
-                    if (aux == 4):
-                        return True
-            else:
-                return False
 
     def moveBlock (self):
         if (self.possivelY(+30) == True):
-            self.atual.changeXY(self.atual.b[1].x, self.atual.b[1].y + 30)
+            self.atual.changeXY(self.atual.b[1].x, self.atual.b[1].y + 30, self.atual.rot, self.atual.b)
             self.repaint()
         else:
             self.pecaAleatoria()
@@ -117,14 +87,15 @@ class MyLabel(QtWidgets.QLabel):
 
     
     def controlarBlock (self, opcao):
-        if (opcao == "D") and (self.possivelXPos() == True):
-            self.atual.changeXY(self.atual.b[1].x + 30, self.atual.b[1].y)
-        elif (opcao == "E") and (self.possivelXNeg() == True):
-            self.atual.changeXY(self.atual.b[1].x - 30, self.atual.b[1].y)
+        if (opcao == "D") and (self.atual.verificarXPos(self.atual.b, self.blocosFixos, self.PlayerScene_x, self.PlayerScene_posx) == True):
+            self.atual.changeXY(self.atual.b[1].x + 30, self.atual.b[1].y, self.atual.rot, self.atual.b)
+        elif (opcao == "E") and (self.atual.verificarXNeg(self.atual.b, self.blocosFixos, self.PlayerScene_x, self.PlayerScene_posx) == True):
+            self.atual.changeXY(self.atual.b[1].x - 30, self.atual.b[1].y, self.atual.rot, self.atual.b)
         elif (opcao == "S") and (self.possivelY(+30) == True):
-            self.atual.changeXY(self.atual.b[1].x, self.atual.b[1].y + 30)
+            self.atual.changeXY(self.atual.b[1].x, self.atual.b[1].y + 30, self.atual.rot, self.atual.b)
         elif (opcao == "W"):
-            self.atual.rotacionar()
+            if (self.atual.rotacionarTest(self.blocosFixos, self.PlayerScene_x, self.PlayerScene_posx) == True):
+                self.atual.rotacionar()
         self.repaint()
 
 
