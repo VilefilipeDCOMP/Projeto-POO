@@ -7,6 +7,7 @@ class Bullet:
     def __init__ (self):
         self.y = 1
         self.x = 0.5
+        
 
     def inc (self):
         self.y -= 0.01
@@ -51,6 +52,7 @@ class MyLabel(QtWidgets.QLabel):
         self.py = 0.5
         self.paint = True
         self.pecaAleatoria()
+        self.pontos = 0
     
     def paintEvent (self, event):
         super().paintEvent(event)
@@ -75,6 +77,10 @@ class MyLabel(QtWidgets.QLabel):
         qp.setPen(QtGui.QColor(255,255,255))
         qp.setFont(QtGui.QFont("Arial", 15))
         qp.drawText(width - 205 - 50 + 80, height - 205 - 50 + 25, "NEXT")
+
+        qp.setPen(QtGui.QColor(255,255,255))
+        qp.setFont(QtGui.QFont("Arial", 15))
+        qp.drawText(50, 30, f"Pontos: {self.pontos}")
         
         # Pintar bloco fixo
         for (bloco_x, bloco_y) in self.blocosFixos:
@@ -150,6 +156,7 @@ class MyLabel(QtWidgets.QLabel):
             self.repaint()
         else:
             self.pecaAleatoria()
+            self.checarLinhas()
 
     
     def controlarBlock (self, opcao):
@@ -160,6 +167,43 @@ class MyLabel(QtWidgets.QLabel):
         elif (opcao == "S") and (self.possivelY(+30) == True):
             self.atual.changeXY(self.atual.b[1].x, self.atual.b[1].y + 30)
         self.repaint()
+
+
+    def checarLinhas(self):
+        linhas_removidas = 0
+        largura_blocos = self.PlayerScene_x // 30  # 12 colunas
+
+        # agrupar blocos por linha y
+        linhas = {}
+        for (x, y) in self.blocosFixos:
+            linhas.setdefault(y, []).append((x, y))
+
+        # identificar linhas cheias
+        linhas_cheias = [y for y, blocos in linhas.items() if len(blocos) == largura_blocos]
+
+        if linhas_cheias:
+            linhas_removidas = len(linhas_cheias)
+
+            # remove blocos dessas linhas
+            self.blocosFixos = [(x,y) for (x,y) in self.blocosFixos if y not in linhas_cheias]
+
+            for y_removida in sorted(linhas_cheias):
+                novos_blocos = []
+                for (x,y) in self.blocosFixos:
+                    if y < y_removida:  # blocos acima descem
+                        novos_blocos.append((x, y+30))
+                    else:
+                        novos_blocos.append((x, y))
+                self.blocosFixos = novos_blocos
+
+            if linhas_removidas == 1:
+                self.pontos += 100
+            elif linhas_removidas == 2:
+                self.pontos += 300
+            elif linhas_removidas == 3:
+                self.pontos += 500
+            elif linhas_removidas >= 4:
+                self.pontos += 800
 
     # def controlarBlock (self, opcao):
     #     if (opcao == "D") and (self.atual.b[1].x != 721):
