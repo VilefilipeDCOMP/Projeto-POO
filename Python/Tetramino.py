@@ -23,12 +23,21 @@ class box:
 class tetriPeca_Barra:
     cor = QtGui.QColor(15,155,215,255)
     b = [box(cor), box(cor), box(cor), box(cor)]
+    rot = 0
 
     def changeXY(self, x, y):
-        self.b[0].changeXY(x - box.size, y)
-        self.b[1].changeXY(x, y)
-        self.b[2].changeXY(x + box.size, y)
-        self.b[3].changeXY(x + (box.size) * 2, y)
+        # x = self.b[0].getX()
+        # y = self.b[0].getY()
+        if self.rot == 1:
+            self.b[0].changeXY(x, y - box.size)
+            self.b[1].changeXY(x, y)
+            self.b[2].changeXY(x, y + box.size)
+            self.b[3].changeXY(x, y + (box.size) * 2)
+        else:
+            self.b[0].changeXY(x - box.size, y)
+            self.b[1].changeXY(x, y)
+            self.b[2].changeXY(x + box.size, y)
+            self.b[3].changeXY(x + (box.size) * 2, y)
 
     def __init__(self, x, y):
         self.changeXY(x,y)
@@ -36,6 +45,13 @@ class tetriPeca_Barra:
         self.xmin = self.b[0]
         self.ymin = self.b[1]
         self.ymax = self.b[1]
+
+    def rotacionar(self):
+        if (self.rot == 0):
+            self.rot = 1
+        else:
+            self.rot = 0
+        print(self.rot)
 
     def draw(self, qp):
         for block in self.b:
@@ -45,6 +61,7 @@ class tetriPeca_Barra:
 class tetriPeca_Quadrada: 
     cor = QtGui.QColor(227,159,2,255)
     b = [box(cor), box(cor), box(cor), box(cor)]
+    rot = 0
 
     def changeXY(self, x, y):
         self.b[0].changeXY(x - box.size, y)
@@ -58,6 +75,9 @@ class tetriPeca_Quadrada:
         self.xmin = self.b[0]
         self.ymin = self.b[0]
         self.ymax = self.b[3]
+    
+    def rotacionar(self):
+        pass
 
     def draw(self, qp):
         for block in self.b:
@@ -67,12 +87,30 @@ class tetriPeca_Quadrada:
 class tetriPeca_L: 
     cor = QtGui.QColor(33,65,198,255)
     b = [box(cor), box(cor), box(cor), box(cor)]
+    rot = 0
 
     def changeXY(self, x, y):
-        self.b[0].changeXY(x - box.size, y)
-        self.b[1].changeXY(x, y)
-        self.b[2].changeXY(x, y - box.size)
-        self.b[3].changeXY(x, y - (box.size*2))
+        match self.rot:
+            case 0:
+                self.b[0].changeXY(x - box.size, y)
+                self.b[1].changeXY(x, y)
+                self.b[2].changeXY(x, y - box.size)
+                self.b[3].changeXY(x, y - (box.size*2))
+            case 1:
+                self.b[0].changeXY(x, y  - box.size)
+                self.b[1].changeXY(x, y)
+                self.b[2].changeXY(x + box.size, y)
+                self.b[3].changeXY(x + (box.size*2), y)
+            case 2:
+                self.b[0].changeXY(x + box.size, y)
+                self.b[1].changeXY(x, y)
+                self.b[2].changeXY(x, y + box.size)
+                self.b[3].changeXY(x, y + (box.size*2))
+            case 3:
+                self.b[0].changeXY(x, y  + box.size)
+                self.b[1].changeXY(x, y)
+                self.b[2].changeXY(x - box.size, y)
+                self.b[3].changeXY(x - (box.size*2), y)
 
     def __init__(self, x, y):
         self.changeXY(x,y)
@@ -80,6 +118,12 @@ class tetriPeca_L:
         self.xmin = self.b[0]
         self.ymin = self.b[1]
         self.ymax = self.b[3]
+    
+    def rotacionar(self):
+        if (self.rot == 3):
+            self.rot = 0 
+        else:
+            self.rot += 1
 
     def draw(self, qp):
         for block in self.b:
@@ -89,12 +133,30 @@ class tetriPeca_L:
 class tetriPeca_LInv: 
     cor = QtGui.QColor(227,91,2,255)
     b = [box(cor), box(cor), box(cor), box(cor)]
+    rot = 0
 
     def changeXY(self, x, y):
-        self.b[0].changeXY(x + box.size, y)
-        self.b[1].changeXY(x, y)
-        self.b[2].changeXY(x, y - box.size)
-        self.b[3].changeXY(x, y - (box.size*2))
+        match self.rot:
+            case 0:
+                self.b[0].changeXY(x + box.size, y)
+                self.b[1].changeXY(x, y)
+                self.b[2].changeXY(x, y - box.size)
+                self.b[3].changeXY(x, y - (box.size*2))
+            case 1:
+                self.b[0].changeXY(x, y  + box.size)
+                self.b[1].changeXY(x, y)
+                self.b[2].changeXY(x + box.size, y)
+                self.b[3].changeXY(x + (box.size*2), y)
+            case 2:
+                self.b[0].changeXY(x - box.size, y)
+                self.b[1].changeXY(x, y)
+                self.b[2].changeXY(x, y + box.size)
+                self.b[3].changeXY(x, y + (box.size*2))
+            case 3:
+                self.b[0].changeXY(x, y  - box.size)
+                self.b[1].changeXY(x, y)
+                self.b[2].changeXY(x - box.size, y)
+                self.b[3].changeXY(x - (box.size*2), y)
 
     def __init__(self, x, y):
         self.changeXY(x,y)
@@ -102,6 +164,12 @@ class tetriPeca_LInv:
         self.xmin = self.b[1]
         self.ymin = self.b[1]
         self.ymax = self.b[3]
+    
+    def rotacionar(self):
+        if (self.rot == 3):
+            self.rot = 0 
+        else:
+            self.rot += 1
 
     def draw(self, qp):
         for block in self.b:
@@ -111,12 +179,20 @@ class tetriPeca_LInv:
 class tetriPeca_S: 
     cor = QtGui.QColor(89,177,1,255)
     b = [box(cor), box(cor), box(cor), box(cor)]
+    rot = 0
 
     def changeXY(self, x, y):
-        self.b[0].changeXY(x - box.size, y)
-        self.b[1].changeXY(x, y)
-        self.b[2].changeXY(x, y - box.size)
-        self.b[3].changeXY(x + box.size, y - box.size)
+        match self.rot:
+            case 0 | 2:
+                self.b[0].changeXY(x - box.size, y)
+                self.b[1].changeXY(x, y)
+                self.b[2].changeXY(x, y - box.size)
+                self.b[3].changeXY(x + box.size, y - box.size)
+            case 1 | 3:
+                self.b[0].changeXY(x, y  - box.size)
+                self.b[1].changeXY(x, y)
+                self.b[2].changeXY(x + box.size, y)
+                self.b[3].changeXY(x + box.size, y + box.size)
 
     def __init__(self, x, y):
         self.changeXY(x,y)
@@ -124,6 +200,12 @@ class tetriPeca_S:
         self.xmin = self.b[0]
         self.ymin = self.b[2]
         self.ymax = self.b[1]
+
+    def rotacionar(self):
+        if (self.rot == 3):
+            self.rot = 0 
+        else:
+            self.rot += 1
 
     def draw(self, qp):
         for block in self.b:
@@ -133,12 +215,20 @@ class tetriPeca_S:
 class tetriPeca_SInv: 
     cor = QtGui.QColor(215,15,55,255)
     b = [box(cor), box(cor), box(cor), box(cor)]
+    rot = 0
 
     def changeXY(self, x, y):
-        self.b[0].changeXY(x + box.size, y)
-        self.b[1].changeXY(x, y)
-        self.b[2].changeXY(x, y - box.size)
-        self.b[3].changeXY(x - box.size, y - box.size)
+        match self.rot:
+            case 0 | 2:
+                self.b[0].changeXY(x + box.size, y)
+                self.b[1].changeXY(x, y)
+                self.b[2].changeXY(x, y - box.size)
+                self.b[3].changeXY(x - box.size, y - box.size)
+            case 1 | 3:
+                self.b[0].changeXY(x, y  - box.size)
+                self.b[1].changeXY(x, y)
+                self.b[2].changeXY(x - box.size, y)
+                self.b[3].changeXY(x - box.size, y + box.size)
 
     def __init__(self, x, y):
         self.changeXY(x,y)
@@ -146,6 +236,13 @@ class tetriPeca_SInv:
         self.xmin = self.b[3]
         self.ymin = self.b[3]
         self.ymax = self.b[1]
+    
+    def rotacionar(self):
+        if (self.rot == 3):
+            self.rot = 0 
+        else:
+            self.rot += 1
+        print(self.rot)
 
     def draw(self, qp):
         for block in self.b:
@@ -155,12 +252,31 @@ class tetriPeca_SInv:
 class tetriPeca_Triangulo: 
     cor = QtGui.QColor(175,41,138,255)
     b = [box(cor), box(cor), box(cor), box(cor)]
+    rot = 0
 
     def changeXY(self, x, y):
-        self.b[0].changeXY(x - box.size, y)
-        self.b[1].changeXY(x, y)
-        self.b[2].changeXY(x + box.size, y)
-        self.b[3].changeXY(x, y + box.size)
+        match self.rot:
+            case 0:
+                self.b[0].changeXY(x - box.size, y)
+                self.b[1].changeXY(x, y)
+                self.b[2].changeXY(x + box.size, y)
+                self.b[3].changeXY(x, y + box.size)
+            case 1:
+                self.b[0].changeXY(x, y  - box.size)
+                self.b[1].changeXY(x, y)
+                self.b[2].changeXY(x, y + box.size)
+                self.b[3].changeXY(x - box.size, y)
+            case 2:
+                self.b[0].changeXY(x + box.size, y)
+                self.b[1].changeXY(x, y)
+                self.b[2].changeXY(x - box.size, y)
+                self.b[3].changeXY(x, y - box.size)
+            case 3:
+                self.b[0].changeXY(x, y + box.size)
+                self.b[1].changeXY(x, y)
+                self.b[2].changeXY(x, y  - box.size)
+                self.b[3].changeXY(x + box.size, y)
+
 
     def __init__(self, x, y):
         self.changeXY(x,y)
@@ -168,6 +284,13 @@ class tetriPeca_Triangulo:
         self.xmin = self.b[0]
         self.ymin = self.b[1]
         self.ymax = self.b[3]
+
+    def rotacionar(self):
+        if (self.rot == 3):
+            self.rot = 0 
+        else:
+            self.rot += 1
+        print(self.rot)
 
     def draw(self, qp):
         for block in self.b:

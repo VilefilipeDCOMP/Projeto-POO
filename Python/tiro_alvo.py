@@ -21,6 +21,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.label.controlarBlock("E")
         elif event.key() == QtCore.Qt.Key_S:
             self.label.controlarBlock("S")
+        elif event.key() == QtCore.Qt.Key_W:
+            self.label.controlarBlock("W")
 
     def slotAtirar (self):
         self.label.shoot()
