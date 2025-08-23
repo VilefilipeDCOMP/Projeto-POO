@@ -26,6 +26,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def slotAtirar (self):
         self.label.shoot()
+
+    def resetGame(self):
+        self.label.blocosFixos.clear()
+        self.label.pontos = 0
+        self.label.atual = None
+        self.label.pecaAleatoria()
+        self.label.repaint()
+
         
 app = QtWidgets.QApplication(sys.argv)
 

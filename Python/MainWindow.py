@@ -50,6 +50,14 @@ class Ui_MainWindow(object):
         # self.pushButton.clicked.connect(MainWindow.slotAtirar)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+        self.resetButton = QtWidgets.QPushButton(self.centralwidget)
+        self.resetButton.setText("Reset")
+        self.resetButton.setFixedSize(80, 30)
+        self.resetButton.move(self.HEIGHT - 120, 20) 
+        self.resetButton.clicked.connect(MainWindow.resetGame)
+
+        self.verticalLayout.addWidget(self.label)
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))

@@ -24,6 +24,13 @@ class MyLabel(QtWidgets.QLabel):
         n = random.randint(0, len(self.pecas) - 1)
         # print(self.pecas[n])
         self.atual = self.pecas[n]
+        self.atual.changeXY(451 + int(451/3), 100, 0, self.atual.b)
+        self.atual.rot = 0
+
+        for bloco in self.atual.b:
+            if (bloco.getX(), bloco.getY()) in self.blocosFixos:
+                self.gameOver()
+                return
 
     def __init__(self,parms) -> None:
         super().__init__(parms)
@@ -97,6 +104,32 @@ class MyLabel(QtWidgets.QLabel):
             if (self.atual.rotacionarTest(self.blocosFixos, self.PlayerScene_x, self.PlayerScene_posx) == True):
                 self.atual.rotacionar()
         self.repaint()
+    
+    def resetGame(self):
+        self.blocosFixos.clear()
+        self.pontos = 0
+        self.atual = None
+        self.pecaAleatoria()
+        self.repaint()
+
+    def gameOver(self):
+        # trava a movimentação
+        self.paint = False  
+
+        # mostrar mensagem
+        msg = QtWidgets.QMessageBox()
+        msg.setWindowTitle("Game Over")
+        msg.setText(f"Fim de jogo!\nPontuação final: {self.pontos}")
+        msg.setIcon(QtWidgets.QMessageBox.Critical)
+        ok_btn = msg.addButton("Ok", QtWidgets.QMessageBox.AcceptRole)
+        reset_btn = msg.addButton("Resetar", QtWidgets.QMessageBox.RejectRole)
+
+        msg.exec_()
+
+        if msg.clickedButton() == ok_btn:
+            QtWidgets.qApp.quit()
+        elif msg.clickedButton() == reset_btn:
+            self.resetGame()
 
 
     def checarLinhas(self):
