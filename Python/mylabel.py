@@ -3,8 +3,10 @@ from Tetramino import *
 import random
 
 class MyLabel(QtWidgets.QLabel):
-    posInicial_x = 451 + int(451/3)
-    posInicial_y = 100
+    posInicial_x = 451 + int(451/2.5)
+    posInicial_y = 70
+    # posInicial_x = 451 + int(451/3)
+    # posInicial_y = 100
 
     pecas = [tetriPeca_Barra(posInicial_x, posInicial_y), tetriPeca_Quadrada(posInicial_x, posInicial_y), tetriPeca_L(posInicial_x, posInicial_y) , tetriPeca_LInv(posInicial_x, posInicial_y), tetriPeca_S(posInicial_x, posInicial_y), tetriPeca_SInv(posInicial_x, posInicial_y), tetriPeca_Triangulo(posInicial_x, posInicial_y)]
     pecas_Res = [tetriPeca_Barra(posInicial_x, posInicial_y), tetriPeca_Quadrada(posInicial_x, posInicial_y), tetriPeca_L(posInicial_x, posInicial_y) , tetriPeca_LInv(posInicial_x, posInicial_y), tetriPeca_S(posInicial_x, posInicial_y), tetriPeca_SInv(posInicial_x, posInicial_y), tetriPeca_Triangulo(posInicial_x, posInicial_y)]
@@ -53,10 +55,10 @@ class MyLabel(QtWidgets.QLabel):
     def paintEvent (self, event):
         super().paintEvent(event)
         qp = QtGui.QPainter(self)
-        br = QtGui.QBrush(QtGui.QColor(0,0,0,255))
         height = self.height()
         width = self.width()
         
+        br = QtGui.QBrush(QtGui.QColor(0,0,0,255))
         qp.setBrush(br)
         qp.drawRect(0,0,width-5,height - 5)
         qp.setPen(QtGui.QColor(255,255,255))  
@@ -78,6 +80,11 @@ class MyLabel(QtWidgets.QLabel):
             qp.drawRect(bloco_x, bloco_y, 30, 30)
 
         self.atual.draw(qp)
+
+        qp.setPen(QtCore.Qt.NoPen) 
+        qp.setBrush(QtGui.QBrush(QtGui.QColor(0,0,0,255))) 
+        qp.drawRect(self.PlayerScene_posx, 1, self.PlayerScene_x, self.PlayerScene_posy - 1)
+        qp.setPen(QtGui.QColor(255,255,255))  
 
         for bloco in self.reserva.b:
             qp.setBrush(QtGui.QBrush(self.reserva.cor))
