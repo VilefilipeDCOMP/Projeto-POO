@@ -53,7 +53,9 @@ class Ui_MainWindow(object):
         self.resetButton = QtWidgets.QPushButton(self.centralwidget)
         self.resetButton.setText("Reset")
         self.resetButton.setFixedSize(80, 30)
-        self.resetButton.move(self.HEIGHT - 120, 20) 
+        
+        self.resetButton.move((self.label.PlayerScene_x+self.label.PlayerScene_posx + 150) + 68, self.label.PlayerScene_posy + 25 + 40) 
+        # self.resetButton.move(self.HEIGHT - 120, 20) 
         self.resetButton.clicked.connect(MainWindow.resetGame)
 
         self.verticalLayout.addWidget(self.label)

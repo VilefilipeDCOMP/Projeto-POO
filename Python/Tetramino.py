@@ -22,11 +22,11 @@ class box:
     
 class Peca:
     cor = 0
-    b = [box(cor), box(cor), box(cor), box(cor)]
-    bTemp = [box(cor), box(cor), box(cor), box(cor)]
     rot = 0
 
     def __init__(self, x, y):
+        self.b = [box(self.cor), box(self.cor), box(self.cor), box(self.cor)]
+        self.bTemp = [box(self.cor), box(self.cor), box(self.cor), box(self.cor)]
         self.changeXY(x,y, self.rot, self.b)
 
     def draw(self, qp):
@@ -69,7 +69,6 @@ class Peca:
                     if (aux == 4):
                         return True
             else:
-                print(bloco.getX(), PlayerScene_posx)   
                 return False
     
     def rotacionarTest(self, blocosFixos, PlayerScene_x, PlayerScene_posx):
