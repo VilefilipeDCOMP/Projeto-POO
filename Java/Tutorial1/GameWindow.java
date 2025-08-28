@@ -29,8 +29,6 @@ public class GameWindow extends JPanel implements Runnable{
     public void startGame() {
         gameThread = new Thread(this);
         gameThread.start();
-
-        pm.gerarAleatorio();
     }
 
     @Override
@@ -57,8 +55,7 @@ public class GameWindow extends JPanel implements Runnable{
     }
 
     public void update() {
-        // System.out.println("va");
-        
+        pm.update();
     }
 
     public void paintComponent(Graphics g) {
@@ -66,6 +63,5 @@ public class GameWindow extends JPanel implements Runnable{
         
         Graphics2D g2 = (Graphics2D) g;
         pm.draw(g2);
-        pm.update(g2);
     }
 }
