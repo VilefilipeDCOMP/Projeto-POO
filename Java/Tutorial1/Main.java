@@ -11,6 +11,7 @@ public class Main {
 
         GameWindow gp = new GameWindow();
         window.add(gp);
+        window.addKeyListener(gp);
         window.pack();
         gp.startGame();
         

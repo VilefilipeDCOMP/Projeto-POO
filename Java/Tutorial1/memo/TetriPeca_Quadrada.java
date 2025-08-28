@@ -2,10 +2,10 @@ package Java.Tutorial1.memo;
 
 import java.awt.Color;
 
-public class tetriPeca_Quadrada extends Peca {
+public class TetriPeca_Quadrada extends Peca {
     Color cor = new Color(227,159,2,255);
     
-    public tetriPeca_Quadrada(int x, int y) {
+    public TetriPeca_Quadrada(int x, int y) {
         super(x, y);
         this.changeXY(x+50, y, this.rot, this.b);
     }

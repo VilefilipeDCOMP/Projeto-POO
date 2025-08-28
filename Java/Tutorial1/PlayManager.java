@@ -3,16 +3,12 @@ package Java.Tutorial1;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.ArrayList;
 import java.util.Random;
 
-import Java.Tutorial1.memo.Block;
-import Java.Tutorial1.memo.Peca;
-import Java.Tutorial1.memo.TetriPeca_Barra;
-import Java.Tutorial1.memo.tetriPeca_Quadrada;
+import Java.Tutorial1.memo.*;
 
 public class PlayManager {
     final int PlayerScene_x = 360;
@@ -25,16 +21,14 @@ public class PlayManager {
     public static int top_y;
     public static int bottom_y;
 
+    boolean movimentar = true;
+
     public int i = 0;
 
-    // TetriPeca_Barra atual;
     Peca atual;
     Peca proximaPeca;
     private Random random;
     ArrayList<Block> blocosFixos;
-
-    // pecas = [tetriPeca_Barra(posInicial_x, posInicial_y), tetriPeca_Quadrada(posInicial_x, posInicial_y), tetriPeca_L(posInicial_x, posInicial_y) , tetriPeca_LInv(posInicial_x, posInicial_y), tetriPeca_S(posInicial_x, posInicial_y), tetriPeca_SInv(posInicial_x, posInicial_y), tetriPeca_Triangulo(posInicial_x, posInicial_y)];
-    // blocosFixos = []
 
     public PlayManager() {
 
@@ -53,7 +47,7 @@ public class PlayManager {
     public Peca gerarAleatorio () {
         int tipoPeca = random.nextInt(2);
         Peca peca = switch (tipoPeca) {
-            case 0 -> new tetriPeca_Quadrada(0, 0);
+            case 0 -> new TetriPeca_Quadrada(0, 0);
             case 1 -> new TetriPeca_Barra(0, 0);
             default -> null;
         };
@@ -62,15 +56,17 @@ public class PlayManager {
 
     public void spawnPeca() {
         atual = proximaPeca;
-        atual.changeXY(PlayerScene_posx + (PlayerScene_x / 2) - 15, PlayerScene_posy, atual.rot, atual.b);
+        atual.changeXY(PlayerScene_posx + (PlayerScene_x / 2) - 30, PlayerScene_posy, atual.rot, atual.b);
+        // Mudei de -15 para -30 para ficar certinho.
+        // atual.changeXY(PlayerScene_posx + (PlayerScene_x / 2) - 15, PlayerScene_posy, atual.rot, atual.b);
 
         proximaPeca = gerarAleatorio();
         proximaPeca.changeXY(PlayerScene_posx + PlayerScene_x + 250, PlayerScene_posy + PlayerScene_y - 120, proximaPeca.rot, proximaPeca.b);
     }
 
-    public boolean possivelY() {
+    public boolean possivelY(Block[] blocos) {
         // int aux = 0;
-        for (Block blocoAtual : this.atual.b) {
+        for (Block blocoAtual : blocos) {
             int proximoY = blocoAtual.getY() + 30; // Posição Y no próximo movimento
 
             // 1. Checa se colide com o chão
@@ -89,10 +85,64 @@ public class PlayManager {
         return true;
     }
 
+    public boolean possivelX(int soma, Block[] blocos) {
+        // int aux = 0;
+        for (Block blocoAtual : blocos) {
+            if (soma == 30) {
+                if (blocoAtual.getX() + 30 != PlayerScene_x+PlayerScene_posx) {
+                    // 2. Checa se colide com algum dos blocos já fixados
+                    for (Block blocoFixo : blocosFixos) {
+                        // Checa se as coordenadas X são as mesmas e se o bloco atual está prestes a entrar na posição Y de um bloco fixo
+                        if (blocoAtual.getX() + 30 == blocoFixo.getX() && blocoAtual.getY() == blocoFixo.getY()) {
+                            return false;
+                        }
+                    }
+                    continue;
+                } else {
+                    return false;
+                }
+            } else if (soma == -30){
+                if (blocoAtual.getX() - 30 >= PlayerScene_posx) {
+                    // 2. Checa se colide com algum dos blocos já fixados
+                    for (Block blocoFixo : blocosFixos) {
+                        // Checa se as coordenadas X são as mesmas e se o bloco atual está prestes a entrar na posição Y de um bloco fixo
+                        if (blocoAtual.getX() - 30 == blocoFixo.getX() && blocoAtual.getY() == blocoFixo.getY()) {
+                            return false;
+                        }
+                    }
+                    continue;
+                } else {
+                    System.out.println(PlayerScene_posx);
+                    return false;
+                }
+            } else if (soma == 0) {
+                if ((blocoAtual.getX() >= PlayerScene_posx) && (blocoAtual.getX() != PlayerScene_x+PlayerScene_posx)) {
+                    for (Block blocoFixo : blocosFixos) {
+                        // Checa se as coordenadas X são as mesmas e se o bloco atual está prestes a entrar na posição Y de um bloco fixo
+                        if (blocoAtual.getX() == blocoFixo.getX() && blocoAtual.getY() == blocoFixo.getY()) {
+                            return false;
+                        }
+                    }
+                    continue;
+                } else {
+                    return false;
+                }
+            }
+            else {
+                System.out.println("Erro do Desenvolvedor, soma não é igual a nenhum dos elementos");
+            }
+
+        }
+        return true;
+    }
+
 
     public void update() {
-        if (this.possivelY()) {
-            atual.changeXY(atual.b[1].x, atual.b[1].y + 30, atual.rot, atual.b);
+        if (this.possivelY(this.atual.b)) {
+            if (this.movimentar == true) {
+                atual.changeXY(atual.b[1].x, atual.b[1].y + 30, atual.rot, atual.b);
+                this.movimentar = false;
+            }
         } else {
             for (Block bloco : atual.b) {
                 blocosFixos.add(bloco);}
@@ -110,9 +160,6 @@ public class PlayManager {
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2.drawString("NEXT", (PlayerScene_posx+PlayerScene_x + 150) + 78, (PlayerScene_posy+PlayerScene_y-200)+30);
         
-        // # Pintar bloco fixo
-        // for (bloco_x, bloco_y) in self.blocosFixos:
-        //     qp.drawRect(bloco_x, bloco_y, 30, 30)
         for (Block bloco : blocosFixos) {
             bloco.draw(g2);
         }
@@ -120,6 +167,7 @@ public class PlayManager {
         if (this.atual != null) {
             atual.draw(g2);
         }
+
         // Desenha a próxima peça se ela existir
         if (this.proximaPeca != null) {
             proximaPeca.draw(g2);

@@ -12,6 +12,7 @@ public class Peca {
     // Block b[];
     // Block bTemp[];
     public Block b[] = {new Block(cor), new Block(cor), new Block(cor), new Block(cor)};
+    public Block bTemp[] = {new Block(cor), new Block(cor), new Block(cor), new Block(cor)};
    
     
     public Peca(int x, int y) {
@@ -24,6 +25,10 @@ public class Peca {
             g2.setColor(cor);
             g2.drawRect(this.b[i].getX(), this.b[i].getY(), b[0].size, b[0].size);
         }
+        // for (int i = 0; i < 4 ; i++) {
+        //     g2.setColor(Color.white);
+        //     g2.drawRect(this.bTemp[i].getX(), this.bTemp[i].getY(), b[0].size, b[0].size);
+        // }
     }
     
     public void rotacionar() {
@@ -35,11 +40,4 @@ public class Peca {
     }
 
     public void changeXY (int x, int y, int rot, Block b[]) {}
-
-    // def verificarXPos(self, setBlocos, blocosFixos, PlayerScene_x, PlayerScene_posx):
-
-    // def verificarXNeg(self, setBlocos, blocosFixos, PlayerScene_x, PlayerScene_posx):
-
-    // def rotacionarTest(self, blocosFixos, PlayerScene_x, PlayerScene_posx):
-
 }
