@@ -2,6 +2,7 @@ package Java.Tutorial1.memo;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.BasicStroke;
 
 public class Block {
     public int x = 0;
@@ -27,8 +28,14 @@ public class Block {
     }
 
     public void draw (Graphics2D g2) {
-        g2.setColor(c);
+        g2.setStroke(new BasicStroke(1f));
+        g2.setColor(Color.red);
         g2.fillRect(x, y, size, size);
+        g2.setColor(Color.white);
+        g2.drawRect(x, y, size, size);
+
+        // g2.setColor(c);
+        // g2.fillRect(x, y, size, size);
     }
 
     

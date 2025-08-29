@@ -1,29 +1,33 @@
 package Java.Tutorial1.memo;
 
 import java.awt.Color;
+import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 
 public class Peca {
-    Color cor = new Color(15,155,215,255);
-    // Color cor;
     public int rot = 0;
     public final int boxSize = 30;
 
-    // Block b[];
-    // Block bTemp[];
-    public Block b[] = {new Block(cor), new Block(cor), new Block(cor), new Block(cor)};
-    public Block bTemp[] = {new Block(cor), new Block(cor), new Block(cor), new Block(cor)};
+    public Block bTemp[] = {new Block(Color.white), new Block(Color.white), new Block(Color.white), new Block(Color.white)};
+    public Block[] b = new Block[4];
    
     
-    public Peca(int x, int y) {
-        // b[] = {new Block(cor), new Block(cor), new Block(cor), new Block(cor)};
-        // Block bTemp[] = {new Block(cor), new Block(cor), new Block(cor), new Block(cor)};
+    public Peca(int x, int y, Color cor) {
+        for (int i = 0; i < 4; i++) {
+            b[i] = new Block(cor);
+        }
     }
 
     public void draw(Graphics2D g2) {
         for (int i = 0; i < 4 ; i++) {
-            g2.setColor(cor);
+            g2.setStroke(new BasicStroke(1f));
+            g2.setColor(this.b[i].c);
+            g2.fillRect(this.b[i].getX(), this.b[i].getY(), b[0].size, b[0].size);
+            g2.setColor(Color.white);
             g2.drawRect(this.b[i].getX(), this.b[i].getY(), b[0].size, b[0].size);
+
+            // Se quiser voltar para a versão só com a cor na borda
+            // g2.drawRect(this.b[i].getX(), this.b[i].getY(), b[0].size, b[0].size);
         }
         // for (int i = 0; i < 4 ; i++) {
         //     g2.setColor(Color.white);

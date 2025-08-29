@@ -45,10 +45,15 @@ public class PlayManager {
     }
 
     public Peca gerarAleatorio () {
-        int tipoPeca = random.nextInt(2);
+        int tipoPeca = random.nextInt(7);
         Peca peca = switch (tipoPeca) {
             case 0 -> new TetriPeca_Quadrada(0, 0);
             case 1 -> new TetriPeca_Barra(0, 0);
+            case 2 -> new TetriPeca_L(0, 0);
+            case 3 -> new TetriPeca_LInv(0, 0);
+            case 4 -> new TetriPeca_S(0, 0);
+            case 5 -> new TetriPeca_SInv(0, 0);
+            case 6 -> new TetriPeca_Triangulo(0, 0);
             default -> null;
         };
         return peca;
@@ -65,7 +70,6 @@ public class PlayManager {
     }
 
     public boolean possivelY(Block[] blocos) {
-        // int aux = 0;
         for (Block blocoAtual : blocos) {
             int proximoY = blocoAtual.getY() + 30; // Posição Y no próximo movimento
 
@@ -150,9 +154,24 @@ public class PlayManager {
     }
 
     public void draw(Graphics2D g2) {
+        g2.setStroke(new BasicStroke(2f));
         
+        for (Block bloco : blocosFixos) {
+            bloco.draw(g2);
+        }
+        
+        if (this.atual != null) {
+            atual.draw(g2);
+        }
+        
+        // Desenha a próxima peça se ela existir
+        if (this.proximaPeca != null) {
+            proximaPeca.draw(g2);
+        }
+        
+        g2.drawRect(0, 0, GameWindow.WIDTH - 1, GameWindow.HEIGHT - 1);
         g2.setColor(Color.white);
-        g2.setStroke(new BasicStroke(4f));
+        g2.setStroke(new BasicStroke(1.5f));
         g2.drawRect(PlayerScene_posx, PlayerScene_posy, PlayerScene_x, PlayerScene_y);
         g2.drawRect(PlayerScene_posx+PlayerScene_x + 150, PlayerScene_posy+PlayerScene_y-200, 200, 200);
 
@@ -160,17 +179,5 @@ public class PlayManager {
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2.drawString("NEXT", (PlayerScene_posx+PlayerScene_x + 150) + 78, (PlayerScene_posy+PlayerScene_y-200)+30);
         
-        for (Block bloco : blocosFixos) {
-            bloco.draw(g2);
-        }
-
-        if (this.atual != null) {
-            atual.draw(g2);
-        }
-
-        // Desenha a próxima peça se ela existir
-        if (this.proximaPeca != null) {
-            proximaPeca.draw(g2);
-        }
     }
 }
