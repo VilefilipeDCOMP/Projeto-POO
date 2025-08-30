@@ -6,6 +6,8 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.Random;
 
 import Java.Tutorial1.memo.*;
@@ -14,7 +16,7 @@ public class PlayManager {
     final int PlayerScene_x = 360;
     final int PlayerScene_y = 600;
     final int PlayerScene_posy = 50;
-    final int PlayerScene_posx = ( (int) 1262/2) - ( (int) PlayerScene_x/2);
+    final int PlayerScene_posx = (1262/2) - ( (int) PlayerScene_x/2);
     
     public static int left_x;
     public static int right_x;
@@ -22,13 +24,15 @@ public class PlayManager {
     public static int bottom_y;
 
     boolean movimentar = true;
+    public boolean gameOver;
 
     public int i = 0;
 
     Peca atual;
     Peca proximaPeca;
-    private Random random;
+    public Random random;
     ArrayList<Block> blocosFixos;
+    int pontos = 0;
 
     public PlayManager() {
 
@@ -39,6 +43,7 @@ public class PlayManager {
         bottom_y = top_y + PlayerScene_y;
 
         random = new Random();
+        gameOver = false;
         blocosFixos = new ArrayList<>();
         proximaPeca = gerarAleatorio();
         spawnPeca();
@@ -58,6 +63,13 @@ public class PlayManager {
         };
         return peca;
     }
+    public void resetGame() {
+        blocosFixos.clear();
+        pontos = 0;
+        proximaPeca = gerarAleatorio();
+        spawnPeca();
+        gameOver = false;
+    }
 
     public void spawnPeca() {
         atual = proximaPeca;
@@ -66,21 +78,27 @@ public class PlayManager {
         // atual.changeXY(PlayerScene_posx + (PlayerScene_x / 2) - 15, PlayerScene_posy, atual.rot, atual.b);
 
         proximaPeca = gerarAleatorio();
-        proximaPeca.changeXY(PlayerScene_posx + PlayerScene_x + 250, PlayerScene_posy + PlayerScene_y - 120, proximaPeca.rot, proximaPeca.b);
+        proximaPeca.changeXY(PlayerScene_posx + PlayerScene_x + 250, PlayerScene_posy + PlayerScene_y - 100, proximaPeca.rot, proximaPeca.b);
+        for (Block blocoPeca : atual.b) {
+            for (Block blocoFixo : blocosFixos) {
+                if (blocoPeca.getX() == blocoFixo.getX() && blocoPeca.getY() == blocoFixo.getY()) {
+                    gameOver = true;
+                    break;
+                }
+            }
+        }
     }
 
     public boolean possivelY(Block[] blocos) {
         for (Block blocoAtual : blocos) {
-            int proximoY = blocoAtual.getY() + 30; // Posição Y no próximo movimento
+            int proximoY = blocoAtual.getY() + 30;
 
-            // 1. Checa se colide com o chão
             if (proximoY >= PlayerScene_posy + PlayerScene_y) {
                 return false;
             }
 
-            // 2. Checa se colide com algum dos blocos já fixados
+
             for (Block blocoFixo : blocosFixos) {
-                // Checa se as coordenadas X são as mesmas e se o bloco atual está prestes a entrar na posição Y de um bloco fixo
                 if (blocoAtual.getX() == blocoFixo.getX() && proximoY == blocoFixo.getY()) {
                     return false;
                 }
@@ -142,16 +160,72 @@ public class PlayManager {
 
 
     public void update() {
-        if (this.possivelY(this.atual.b)) {
-            if (this.movimentar == true) {
+        if (this.movimentar) {
+            if (this.possivelY(this.atual.b)) {
                 atual.changeXY(atual.b[1].x, atual.b[1].y + 30, atual.rot, atual.b);
-                this.movimentar = false;
+            } else {
+                for (Block bloco : atual.b) {
+                    blocosFixos.add(bloco);
+                }
+                checarLinhasCompletas();
+                spawnPeca();
             }
-        } else {
-            for (Block bloco : atual.b) {
-                blocosFixos.add(bloco);}
-            spawnPeca();}
+            this.movimentar = false;
+        }
     }
+
+    public void checarLinhasCompletas() {
+        // A largura do tabuleiro em número de blocos (360 / 30 = 12)
+        ArrayList<Integer> linhasCompletasY = getIntegers();
+
+        if (!linhasCompletasY.isEmpty()) {
+            int linhasRemovidas = linhasCompletasY.size();
+
+            switch (linhasRemovidas) {
+                case 1: pontos += 100; break; // Single
+                case 2: pontos += 300; break; // Double
+                case 3: pontos += 500; break; // Triple
+                case 4: pontos += 800; break; // Tetris
+            }
+
+
+            blocosFixos.removeIf(bloco -> linhasCompletasY.contains(bloco.getY()));
+
+            // Desce os blocos restantes
+            Collections.sort(linhasCompletasY);
+            for (Block bloco : blocosFixos) {
+                int shift = 0;
+                for (int y_removida : linhasCompletasY) {
+                    if (bloco.getY() < y_removida) {
+                        shift++;
+                    }
+                }
+                if (shift > 0) {
+                    bloco.changeXY(bloco.getX(), bloco.getY() + (shift * 30));
+                }
+            }
+        }
+    }
+
+    private ArrayList<Integer> getIntegers() {
+        int larguraEmBlocos = PlayerScene_x / 30;
+        ArrayList<Integer> linhasCompletasY = new ArrayList<>();
+
+        // Primeiro, encontra todas as linhas que estão completas
+        for (int y = PlayerScene_posy; y < PlayerScene_posy + PlayerScene_y; y += 30) {
+            int blocosNaLinha = 0;
+            for (Block bloco : blocosFixos) {
+                if (bloco.getY() == y) {
+                    blocosNaLinha++;
+                }
+            }
+            if (blocosNaLinha == larguraEmBlocos) {
+                linhasCompletasY.add(y);
+            }
+        }
+        return linhasCompletasY;
+    }
+
 
     public void draw(Graphics2D g2) {
         g2.setStroke(new BasicStroke(2f));
@@ -168,6 +242,9 @@ public class PlayManager {
         if (this.proximaPeca != null) {
             proximaPeca.draw(g2);
         }
+
+        g2.setFont(new Font("Arial", Font.PLAIN, 25));
+        g2.drawString("PONTOS: " + pontos, PlayerScene_posx + PlayerScene_x + 150, 120);
         
         g2.drawRect(0, 0, GameWindow.WIDTH - 1, GameWindow.HEIGHT - 1);
         g2.setColor(Color.white);
@@ -178,6 +255,6 @@ public class PlayManager {
         g2.setFont(new Font("Arial", Font.PLAIN, 20));
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2.drawString("NEXT", (PlayerScene_posx+PlayerScene_x + 150) + 78, (PlayerScene_posy+PlayerScene_y-200)+30);
-        
+
     }
 }

@@ -5,7 +5,7 @@ import java.awt.Color;
 public class TetriPeca_LInv extends Peca {
     
     public TetriPeca_LInv(int x, int y) {
-        Color cor = new Color(227,91,2,255);
+        Color cor = new Color(255,255, 0,255);
         super(x, y, cor);
         this.changeXY(x+50, y, this.rot, this.b);
     }
