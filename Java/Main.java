@@ -1,4 +1,4 @@
-package Java.Tutorial1;
+package Java;
 
 import javax.swing.JFrame;
 

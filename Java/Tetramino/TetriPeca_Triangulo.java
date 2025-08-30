@@ -1,4 +1,4 @@
-package Java.Tutorial1.memo;
+package Java.Tetramino;
 
 import java.awt.Color;
 

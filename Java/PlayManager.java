@@ -1,14 +1,8 @@
-package Java.Tutorial1;
-import Java.Tutorial1.memo.*;
+package Java;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
+import Java.Tetramino.*;
+import java.awt.*;
+import java.util.*;
 
 
 public class PlayManager {
