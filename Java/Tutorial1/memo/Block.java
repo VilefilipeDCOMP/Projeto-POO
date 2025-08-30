@@ -33,9 +33,6 @@ public class Block {
         g2.fillRect(x, y, size, size);
         g2.setColor(Color.white);
         g2.drawRect(x, y, size, size);
-
-        // g2.setColor(c);
-        // g2.fillRect(x, y, size, size);
     }
 
     

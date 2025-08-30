@@ -18,7 +18,6 @@ public class GameWindow extends JPanel implements Runnable, KeyListener{
     
     public GameWindow() {
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-        // this.setSize(200, 200);
         this.setBackground(Color.black);
         this.setLayout(null);
         this.addKeyListener(this);
@@ -27,10 +26,7 @@ public class GameWindow extends JPanel implements Runnable, KeyListener{
         pm = new PlayManager();
 
         JButton resetButton = new JButton("Reset");
-        // int PlayerScene_x = 360;
-        // int PlayerScene_posx = (1262 / 2) - (PlayerScene_x / 2);
         resetButton.setBounds(pm.PlayerScene_posx + pm.PlayerScene_x + 150 + 50, 135, 100, 40);
-        // resetButton.setBounds(PlayerScene_posx + PlayerScene_x + 150, 150, 100, 40);
         resetButton.setFont(new Font("Arial", Font.BOLD, 16));
 
         resetButton.addActionListener(new ActionListener() {
@@ -61,7 +57,6 @@ public class GameWindow extends JPanel implements Runnable, KeyListener{
         long lastTime = System.nanoTime();
         long currentTime;
 
-        // System.out.println(gameThread);
         while(gameThread != null) {
             currentTime = System.nanoTime();
             delta += (currentTime - lastTime) / drawInterval;
@@ -105,7 +100,6 @@ public class GameWindow extends JPanel implements Runnable, KeyListener{
                     JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
                     null, options, options[0]
             );
-            // System.out.println("perdeu");
             if (choice == 0) { // Resetar
                 pm.resetGame();
                  startGame();
@@ -116,7 +110,6 @@ public class GameWindow extends JPanel implements Runnable, KeyListener{
     }
     @Override
     public void keyPressed(KeyEvent e) {
-        // System.out.println(e.getKeyCode());
         switch (e.getKeyCode()) {
             case 65: // A
             case 37: // ESQUERDA

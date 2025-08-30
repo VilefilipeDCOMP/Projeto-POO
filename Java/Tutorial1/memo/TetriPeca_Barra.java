@@ -5,8 +5,7 @@ import java.awt.Color;
 public class TetriPeca_Barra extends Peca {
     
     public TetriPeca_Barra(int x, int y) {
-        Color cor = new Color(15,155,215,255);
-        super(x, y, cor);
+        super(x, y, new Color(15,155,215,255));
         this.changeXY(x+50, y, this.rot, this.b);
     }
 

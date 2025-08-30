@@ -3,18 +3,16 @@ from Tetramino import *
 import random
 
 class PlayManager(QtWidgets.QLabel):
-    posInicial_x = 451 + int(451/2.5)
-    posInicial_y = 70
-    # posInicial_x = 451 + int(451/3)
-    # posInicial_y = 100
+    PlayerScene_x = 300
+    PlayerScene_y = 600
+    PlayerScene_posy = 50
+    PlayerScene_posx = int(1262/2) - int(PlayerScene_x/2)
+
+    posInicial_x = PlayerScene_posx + int(PlayerScene_x / 2) - 30
+    posInicial_y = PlayerScene_posy
 
     pecas = [tetriPeca_Barra(posInicial_x, posInicial_y), tetriPeca_Quadrada(posInicial_x, posInicial_y), tetriPeca_L(posInicial_x, posInicial_y) , tetriPeca_LInv(posInicial_x, posInicial_y), tetriPeca_S(posInicial_x, posInicial_y), tetriPeca_SInv(posInicial_x, posInicial_y), tetriPeca_Triangulo(posInicial_x, posInicial_y)]
     pecas_Res = [tetriPeca_Barra(posInicial_x, posInicial_y), tetriPeca_Quadrada(posInicial_x, posInicial_y), tetriPeca_L(posInicial_x, posInicial_y) , tetriPeca_LInv(posInicial_x, posInicial_y), tetriPeca_S(posInicial_x, posInicial_y), tetriPeca_SInv(posInicial_x, posInicial_y), tetriPeca_Triangulo(posInicial_x, posInicial_y)]
-    
-    PlayerScene_x = 360
-    PlayerScene_y = 620
-    PlayerScene_posy = 50
-    PlayerScene_posx = int(1262/2) - int(PlayerScene_x/2)
     
     blocosFixos = []
 
@@ -92,18 +90,16 @@ class PlayManager(QtWidgets.QLabel):
 
 
     def possivelY(self, soma):
-        aux = 0
         for bloco in self.atual.b:
-            if (bloco.getY() + soma != self.PlayerScene_y+self.PlayerScene_posy):
-                try:
-                    self.blocosFixos.index((bloco.x, bloco.y + soma))
-                    return False
-                except ValueError:
-                    aux += 1
-                    if (aux == 4):
-                        return True
-            else:
+            proximo_y = bloco.getY() + soma
+
+            if proximo_y >= self.PlayerScene_posy + self.PlayerScene_y:
                 return False
+
+            if (bloco.getX(), proximo_y) in self.blocosFixos:
+                return False
+        
+        return True
 
     def moveBlock (self):
         if (self.possivelY(+30) == True):
@@ -122,7 +118,7 @@ class PlayManager(QtWidgets.QLabel):
         elif (opcao == "S") and (self.possivelY(+30) == True):
             self.atual.changeXY(self.atual.b[1].x, self.atual.b[1].y + 30, self.atual.rot, self.atual.b)
         elif (opcao == "W"):
-            if (self.atual.rotacionarTest(self.blocosFixos, self.PlayerScene_x, self.PlayerScene_posx) == True):
+            if (self.atual.rotacionarTest(self.blocosFixos, self.PlayerScene_x, self.PlayerScene_posx, self.PlayerScene_posy, self.PlayerScene_y) == True):
                 self.atual.rotacionar()
         self.repaint()
     
@@ -134,11 +130,9 @@ class PlayManager(QtWidgets.QLabel):
         self.repaint()
 
     def gameOver(self):
-        # trava a movimentação
-        self.paint = False  
-
-        # mostrar mensagem
-        msg = QtWidgets.QMessageBox()
+        self.paint = False ## trava a movimentacao
+        
+        msg = QtWidgets.QMessageBox() ## Mostra a mensagem pop-up
         msg.setWindowTitle("Game Over")
         msg.setText(f"Fim de jogo!\nPontuação final: {self.pontos}")
         msg.setIcon(QtWidgets.QMessageBox.Critical)
@@ -155,26 +149,24 @@ class PlayManager(QtWidgets.QLabel):
 
     def checarLinhas(self):
         linhas_removidas = 0
-        largura_blocos = self.PlayerScene_x // 30  # 12 colunas
+        largura_blocos = self.PlayerScene_x // 30
 
-        # agrupar blocos por linha y
-        linhas = {}
+        linhas = {} ## agrupar blocos por linha y
         for (x, y) in self.blocosFixos:
             linhas.setdefault(y, []).append((x, y))
 
-        # identificar linhas cheias
-        linhas_cheias = [y for y, blocos in linhas.items() if len(blocos) == largura_blocos]
+        
+        linhas_cheias = [y for y, blocos in linhas.items() if len(blocos) == largura_blocos] ## identificar linhas cheias
 
         if linhas_cheias:
             linhas_removidas = len(linhas_cheias)
 
-            # remove blocos dessas linhas
-            self.blocosFixos = [(x,y) for (x,y) in self.blocosFixos if y not in linhas_cheias]
+            self.blocosFixos = [(x,y) for (x,y) in self.blocosFixos if y not in linhas_cheias] ## remove os blocos dessas linhas
 
             for y_removida in sorted(linhas_cheias):
                 novos_blocos = []
                 for (x,y) in self.blocosFixos:
-                    if y < y_removida:  # blocos acima descem
+                    if y < y_removida:  ## blocos acima descem
                         novos_blocos.append((x, y+30))
                     else:
                         novos_blocos.append((x, y))

@@ -1,4 +1,5 @@
 package Java.Tutorial1;
+import Java.Tutorial1.memo.*;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -7,13 +8,11 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Random;
 
-import Java.Tutorial1.memo.*;
 
 public class PlayManager {
-    final int PlayerScene_x = 360;
+    final int PlayerScene_x = 300;
     final int PlayerScene_y = 600;
     final int PlayerScene_posy = 50;
     final int PlayerScene_posx = (1262/2) - ( (int) PlayerScene_x/2);
@@ -35,8 +34,6 @@ public class PlayManager {
     int pontos = 0;
 
     public PlayManager() {
-
-        //Main Play Area Frame
         left_x = (GameWindow.WIDTH/2) - (PlayerScene_x/2);
         right_x = left_x + PlayerScene_x;
         top_y = 50;
@@ -108,13 +105,10 @@ public class PlayManager {
     }
 
     public boolean possivelX(int soma, Block[] blocos) {
-        // int aux = 0;
         for (Block blocoAtual : blocos) {
             if (soma == 30) {
                 if (blocoAtual.getX() + 30 != PlayerScene_x+PlayerScene_posx) {
-                    // 2. Checa se colide com algum dos blocos já fixados
                     for (Block blocoFixo : blocosFixos) {
-                        // Checa se as coordenadas X são as mesmas e se o bloco atual está prestes a entrar na posição Y de um bloco fixo
                         if (blocoAtual.getX() + 30 == blocoFixo.getX() && blocoAtual.getY() == blocoFixo.getY()) {
                             return false;
                         }
@@ -125,9 +119,7 @@ public class PlayManager {
                 }
             } else if (soma == -30){
                 if (blocoAtual.getX() - 30 >= PlayerScene_posx) {
-                    // 2. Checa se colide com algum dos blocos já fixados
                     for (Block blocoFixo : blocosFixos) {
-                        // Checa se as coordenadas X são as mesmas e se o bloco atual está prestes a entrar na posição Y de um bloco fixo
                         if (blocoAtual.getX() - 30 == blocoFixo.getX() && blocoAtual.getY() == blocoFixo.getY()) {
                             return false;
                         }
@@ -139,7 +131,6 @@ public class PlayManager {
             } else if (soma == 0) {
                 if ((blocoAtual.getX() >= PlayerScene_posx) && (blocoAtual.getX() != PlayerScene_x+PlayerScene_posx)) {
                     for (Block blocoFixo : blocosFixos) {
-                        // Checa se as coordenadas X são as mesmas e se o bloco atual está prestes a entrar na posição Y de um bloco fixo
                         if (blocoAtual.getX() == blocoFixo.getX() && blocoAtual.getY() == blocoFixo.getY()) {
                             return false;
                         }
@@ -174,7 +165,6 @@ public class PlayManager {
     }
 
     public void checarLinhasCompletas() {
-        // A largura do tabuleiro em número de blocos (360 / 30 = 12)
         ArrayList<Integer> linhasCompletasY = getIntegers();
 
         if (!linhasCompletasY.isEmpty()) {
@@ -187,10 +177,8 @@ public class PlayManager {
                 case 4: pontos += 800; break; // Tetris
             }
 
-
             blocosFixos.removeIf(bloco -> linhasCompletasY.contains(bloco.getY()));
 
-            // Desce os blocos restantes
             Collections.sort(linhasCompletasY);
             for (Block bloco : blocosFixos) {
                 int shift = 0;
@@ -210,7 +198,6 @@ public class PlayManager {
         int larguraEmBlocos = PlayerScene_x / 30;
         ArrayList<Integer> linhasCompletasY = new ArrayList<>();
 
-        // Primeiro, encontra todas as linhas que estão completas
         for (int y = PlayerScene_posy; y < PlayerScene_posy + PlayerScene_y; y += 30) {
             int blocosNaLinha = 0;
             for (Block bloco : blocosFixos) {
@@ -237,7 +224,6 @@ public class PlayManager {
             atual.draw(g2);
         }
         
-        // Desenha a próxima peça se ela existir
         if (this.proximaPeca != null) {
             proximaPeca.draw(g2);
         }

@@ -5,7 +5,7 @@ class box:
     x = 0
     y = 0
 
-    def __init__ (self, QColor): # QtGui.QColor(0,0,0,255)
+    def __init__ (self, QColor):
         self.br = QtGui.QBrush(QColor)
         self.y = 50
         self.x = 50
@@ -30,9 +30,6 @@ class Peca:
         self.changeXY(x,y, self.rot, self.b)
 
     def draw(self, qp):
-        # for block in self.bTemp:
-        #     qp.setBrush(QtGui.QBrush(QtGui.QColor(0,0,0,0)))
-        #     qp.drawRect(block.getX(), block.getY(), box.size, box.size)
         for block in self.b:
             qp.setBrush(QtGui.QBrush(self.cor))
             qp.drawRect(block.getX(), block.getY(), box.size, box.size)
@@ -43,52 +40,54 @@ class Peca:
         else:
             self.rot += 1
 
+        pivot_x = self.b[1].getX()
+        pivot_y = self.b[1].getY()
+        self.changeXY(pivot_x, pivot_y, self.rot, self.b)
+
     def verificarXPos(self, setBlocos, blocosFixos, PlayerScene_x, PlayerScene_posx):
-        aux = 0
         for bloco in setBlocos:
-            if (bloco.getX() + 30 != PlayerScene_x+PlayerScene_posx):
-                try:
-                    blocosFixos.index((bloco.x + 30, bloco.y))
-                    return False
-                except ValueError:
-                    aux += 1
-                    if (aux == 4):
-                        return True
-            else:
+            proximo_x = bloco.getX() + 30
+
+            if proximo_x >= PlayerScene_posx + PlayerScene_x: ## Checa com a borda da direita
                 return False
+            
+            if (proximo_x, bloco.getY()) in blocosFixos: ## Checa com os blocos fixos
+                return False
+        
+        return True
 
     def verificarXNeg(self, setBlocos, blocosFixos, PlayerScene_x, PlayerScene_posx):
-        aux = 0
         for bloco in setBlocos:
-            if (bloco.getX() != PlayerScene_posx):
-                try:
-                    blocosFixos.index((bloco.x - 30, bloco.y))
-                    return False
-                except ValueError:
-                    aux += 1
-                    if (aux == 4):
-                        return True
-            else:
-                return False
-    
-    def rotacionarTest(self, blocosFixos, PlayerScene_x, PlayerScene_posx):
-        test_rot = self.rot
-        if (test_rot == 3):
-            test_rot = 0 
-        else:
-            test_rot += 1
+            proximo_x = bloco.getX() - 30
 
+            if proximo_x < PlayerScene_posx: ## Checa com a borda da esquerda
+                return False
+
+            if (proximo_x, bloco.getY()) in blocosFixos:
+                return False
+        
+        return True
+    
+    def rotacionarTest(self, blocosFixos, PlayerScene_x, PlayerScene_posx, PlayerScene_posy, PlayerScene_y):
+        test_rot = self.rot + 1 if self.rot < 3 else 0
+        
         x = self.b[1].getX()
         y = self.b[1].getY()
 
         self.changeXY(x, y, test_rot, self.bTemp)
 
-        # print(self.verificarXNeg(self.bTemp, blocosFixos, PlayerScene_x, PlayerScene_posx), self.verificarXPos(self.bTemp, blocosFixos, PlayerScene_x, PlayerScene_posx))
-
-        if (self.verificarXNeg(self.bTemp, blocosFixos, PlayerScene_x, PlayerScene_posx) == True and self.verificarXPos(self.bTemp, blocosFixos, PlayerScene_x, PlayerScene_posx) == True):
-            return True
-        else:
-            return False
+        
+        for bloco_temp in self.bTemp: 
+            if not (PlayerScene_posx <= bloco_temp.getX() < PlayerScene_posx + PlayerScene_x):
+                return False
+            
+            if (bloco_temp.getY() >= PlayerScene_posy + PlayerScene_y):
+                return False
+            
+            if (bloco_temp.getX(), bloco_temp.getY()) in blocosFixos:
+                return False
+        
+        return True
 
 
 class tetriPeca_Barra (Peca):

@@ -12,12 +12,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setFixedSize(1280, 800)
         self.timer=QTimer()
         self.timer.timeout.connect(self.label.moveBlock)
-        # self.timer.start(36)
         self.timer.start(360)
         self.setFocusPolicy(QtCore.Qt.StrongFocus)
 
     
-    def keyPressEvent(self, event): ## Switch case seria uma boa aqui
+    def keyPressEvent(self, event):
         match (event.key()):
             case QtCore.Qt.Key_D | QtCore.Qt.Key_Right:
                 self.label.controlarBlock("D")
