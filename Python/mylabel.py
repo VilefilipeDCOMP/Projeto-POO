@@ -3,16 +3,22 @@ from Tetramino import *
 import random
 
 class MyLabel(QtWidgets.QLabel):
-    posInicial_x = 451 + int(451/3)
-    posInicial_y = 100
-    # pecas = [tetriPeca_L(posInicial_x, posInicial_y) , tetriPeca_LInv(posInicial_x, posInicial_y)]
+    posInicial_x = 451 + int(451/2.5)
+    posInicial_y = 70
+    # posInicial_x = 451 + int(451/3)
+    # posInicial_y = 100
+
     pecas = [tetriPeca_Barra(posInicial_x, posInicial_y), tetriPeca_Quadrada(posInicial_x, posInicial_y), tetriPeca_L(posInicial_x, posInicial_y) , tetriPeca_LInv(posInicial_x, posInicial_y), tetriPeca_S(posInicial_x, posInicial_y), tetriPeca_SInv(posInicial_x, posInicial_y), tetriPeca_Triangulo(posInicial_x, posInicial_y)]
+    pecas_Res = [tetriPeca_Barra(posInicial_x, posInicial_y), tetriPeca_Quadrada(posInicial_x, posInicial_y), tetriPeca_L(posInicial_x, posInicial_y) , tetriPeca_LInv(posInicial_x, posInicial_y), tetriPeca_S(posInicial_x, posInicial_y), tetriPeca_SInv(posInicial_x, posInicial_y), tetriPeca_Triangulo(posInicial_x, posInicial_y)]
+    
     PlayerScene_x = 360
-    PlayerScene_y = 600
+    PlayerScene_y = 620
     PlayerScene_posy = 50
     PlayerScene_posx = int(1262/2) - int(PlayerScene_x/2)
     
     blocosFixos = []
+
+    num_res = -1
 
     def pecaAleatoria(self):
         try:
@@ -21,11 +27,15 @@ class MyLabel(QtWidgets.QLabel):
             self.atual.changeXY(451 + int(451/3), 100, self.atual.rot, self.atual.b)
         except:
             pass
-        n = random.randint(0, len(self.pecas) - 1)
-        # print(self.pecas[n])
-        self.atual = self.pecas[n]
-        self.atual.changeXY(451 + int(451/3), 80, 0, self.atual.b)
+
+        self.atual = self.pecas[self.num_res]
+        self.atual.changeXY(self.posInicial_x, self.posInicial_y, 0, self.atual.b)
         self.atual.rot = 0
+
+        self.num_res = random.randint(0, len(self.pecas) - 1)
+        self.reserva = self.pecas_Res[self.num_res]
+
+        self.reserva.changeXY((self.PlayerScene_posx+self.PlayerScene_x + 150) + 85, (self.PlayerScene_posy+self.PlayerScene_y)-90, self.reserva.rot, self.reserva.b)
 
         for bloco in self.atual.b:
             if (bloco.getX(), bloco.getY()) in self.blocosFixos:
@@ -38,39 +48,32 @@ class MyLabel(QtWidgets.QLabel):
         self.px = 0.5
         self.py = 0.5
         self.paint = True
+        self.num_res = random.randint(0, len(self.pecas) - 1)
         self.pecaAleatoria()
         self.pontos = 0
     
     def paintEvent (self, event):
         super().paintEvent(event)
         qp = QtGui.QPainter(self)
-        br = QtGui.QBrush(QtGui.QColor(0,0,0,255))
         height = self.height()
         width = self.width()
         
+        br = QtGui.QBrush(QtGui.QColor(0,0,0,255))
         qp.setBrush(br)
         qp.drawRect(0,0,width-5,height - 5)
         qp.setPen(QtGui.QColor(255,255,255))  
         qp.drawRect(self.PlayerScene_posx, self.PlayerScene_posy, self.PlayerScene_x, self.PlayerScene_y)
-        # Linhas verticais
-        for x in range(self.PlayerScene_posx, self.PlayerScene_posx + self.PlayerScene_x, 30):
-            qp.drawLine(x, self.PlayerScene_posy, x, self.PlayerScene_posy + self.PlayerScene_y)
-
-        # Linhas horizontais
-        for y in range(self.PlayerScene_posy, self.PlayerScene_posy + self.PlayerScene_y, 30):
-            qp.drawLine(self.PlayerScene_posx, y, self.PlayerScene_posx + self.PlayerScene_x, y)
-
-        qp.drawRect(width - 205 - 50, height - 205 - 50, 200, 200)
+        qp.drawRect(self.PlayerScene_posx+self.PlayerScene_x + 150, self.PlayerScene_posy+self.PlayerScene_y-200, 200, 200)
 
         br = QtGui.QBrush(QtGui.QColor(255,0,0,255))
         qp.setBrush(br)
         qp.setPen(QtGui.QColor(255,255,255))
         qp.setFont(QtGui.QFont("Arial", 15))
-        qp.drawText(width - 205 - 50 + 80, height - 205 - 50 + 25, "NEXT")
+        qp.drawText((self.PlayerScene_posx+self.PlayerScene_x + 150) + 78, (self.PlayerScene_posy+self.PlayerScene_y-200)+30, "NEXT")
 
         qp.setPen(QtGui.QColor(255,255,255))
         qp.setFont(QtGui.QFont("Arial", 15))
-        qp.drawText(50, 30, f"Pontos: {self.pontos}")
+        qp.drawText((self.PlayerScene_posx+self.PlayerScene_x + 150) + 60, self.PlayerScene_posy + 25, f"Pontos: {self.pontos}")
         
         # Pintar bloco fixo
         for (bloco_x, bloco_y) in self.blocosFixos:
@@ -78,11 +81,20 @@ class MyLabel(QtWidgets.QLabel):
 
         self.atual.draw(qp)
 
+        qp.setPen(QtCore.Qt.NoPen) 
+        qp.setBrush(QtGui.QBrush(QtGui.QColor(0,0,0,255))) 
+        qp.drawRect(self.PlayerScene_posx, 1, self.PlayerScene_x, self.PlayerScene_posy - 1)
+        qp.setPen(QtGui.QColor(255,255,255))  
+
+        for bloco in self.reserva.b:
+            qp.setBrush(QtGui.QBrush(self.reserva.cor))
+            qp.drawRect(bloco.getX(), bloco.getY(), box.size, box.size)
+
+
     def possivelY(self, soma):
         aux = 0
         for bloco in self.atual.b:
-            limite_inferior = self.PlayerScene_posy + self.PlayerScene_y
-            if (bloco.getY() + soma < limite_inferior):
+            if (bloco.getY() + soma != self.PlayerScene_y+self.PlayerScene_posy):
                 try:
                     self.blocosFixos.index((bloco.x, bloco.y + soma))
                     return False
