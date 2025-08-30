@@ -105,7 +105,7 @@ public class GameWindow extends JPanel implements Runnable, KeyListener{
                     JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
                     null, options, options[0]
             );
-            System.out.println("perdeu");
+            // System.out.println("perdeu");
             if (choice == 0) { // Resetar
                 pm.resetGame();
                  startGame();

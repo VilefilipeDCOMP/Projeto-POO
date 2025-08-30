@@ -14,16 +14,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.timer.timeout.connect(self.label.moveBlock)
         # self.timer.start(36)
         self.timer.start(360)
+        self.setFocusPolicy(QtCore.Qt.StrongFocus)
+
     
     def keyPressEvent(self, event): ## Switch case seria uma boa aqui
         match (event.key()):
-            case QtCore.Qt.Key_D:
+            case QtCore.Qt.Key_D | QtCore.Qt.Key_Right:
                 self.label.controlarBlock("D")
-            case QtCore.Qt.Key_A:
+            case QtCore.Qt.Key_A | QtCore.Qt.Key_Left:
                 self.label.controlarBlock("E")
-            case QtCore.Qt.Key_S:
+            case QtCore.Qt.Key_S | QtCore.Qt.Key_Down:
                 self.label.controlarBlock("S")
-            case QtCore.Qt.Key_W:
+            case QtCore.Qt.Key_W | QtCore.Qt.Key_Up:
                 self.label.controlarBlock("W")
 
     def slotAtirar (self):

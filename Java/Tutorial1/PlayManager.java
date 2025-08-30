@@ -134,7 +134,6 @@ public class PlayManager {
                     }
                     continue;
                 } else {
-                    System.out.println(PlayerScene_posx);
                     return false;
                 }
             } else if (soma == 0) {

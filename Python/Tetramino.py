@@ -83,7 +83,7 @@ class Peca:
 
         self.changeXY(x, y, test_rot, self.bTemp)
 
-        print(self.verificarXNeg(self.bTemp, blocosFixos, PlayerScene_x, PlayerScene_posx), self.verificarXPos(self.bTemp, blocosFixos, PlayerScene_x, PlayerScene_posx))
+        # print(self.verificarXNeg(self.bTemp, blocosFixos, PlayerScene_x, PlayerScene_posx), self.verificarXPos(self.bTemp, blocosFixos, PlayerScene_x, PlayerScene_posx))
 
         if (self.verificarXNeg(self.bTemp, blocosFixos, PlayerScene_x, PlayerScene_posx) == True and self.verificarXPos(self.bTemp, blocosFixos, PlayerScene_x, PlayerScene_posx) == True):
             return True
