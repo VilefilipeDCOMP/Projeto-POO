@@ -23,10 +23,14 @@ public class GameWindow extends JPanel implements Runnable, KeyListener{
         this.setLayout(null);
         this.addKeyListener(this);
         this.setFocusable(true);
+
+        pm = new PlayManager();
+
         JButton resetButton = new JButton("Reset");
-        int PlayerScene_x = 360;
-        int PlayerScene_posx = (1262 / 2) - (PlayerScene_x / 2);
-        resetButton.setBounds(PlayerScene_posx + PlayerScene_x + 150, 150, 100, 40);
+        // int PlayerScene_x = 360;
+        // int PlayerScene_posx = (1262 / 2) - (PlayerScene_x / 2);
+        resetButton.setBounds(pm.PlayerScene_posx + pm.PlayerScene_x + 150 + 50, 135, 100, 40);
+        // resetButton.setBounds(PlayerScene_posx + PlayerScene_x + 150, 150, 100, 40);
         resetButton.setFont(new Font("Arial", Font.BOLD, 16));
 
         resetButton.addActionListener(new ActionListener() {
@@ -39,7 +43,7 @@ public class GameWindow extends JPanel implements Runnable, KeyListener{
 
         this.add(resetButton);
 
-        pm = new PlayManager();
+        
     }
 
     public void startGame() {

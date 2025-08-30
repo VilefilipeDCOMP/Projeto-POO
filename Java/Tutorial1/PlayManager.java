@@ -244,17 +244,22 @@ public class PlayManager {
         }
 
         g2.setFont(new Font("Arial", Font.PLAIN, 25));
-        g2.drawString("PONTOS: " + pontos, PlayerScene_posx + PlayerScene_x + 150, 120);
+        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g2.drawString("PONTOS: " + pontos, PlayerScene_posx + PlayerScene_x + 185, 120);
+        
+        g2.setStroke(new BasicStroke(0f));
+        g2.setColor(Color.black);
+        g2.fillRect(PlayerScene_posx, 0, PlayerScene_x, PlayerScene_posy);
         
         g2.drawRect(0, 0, GameWindow.WIDTH - 1, GameWindow.HEIGHT - 1);
         g2.setColor(Color.white);
         g2.setStroke(new BasicStroke(1.5f));
         g2.drawRect(PlayerScene_posx, PlayerScene_posy, PlayerScene_x, PlayerScene_y);
         g2.drawRect(PlayerScene_posx+PlayerScene_x + 150, PlayerScene_posy+PlayerScene_y-200, 200, 200);
-
+        
         g2.setFont(new Font("Arial", Font.PLAIN, 20));
-        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        // g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2.drawString("NEXT", (PlayerScene_posx+PlayerScene_x + 150) + 78, (PlayerScene_posy+PlayerScene_y-200)+30);
-
+        
     }
 }

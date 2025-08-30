@@ -5,11 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: tiro_alvo.py",
-            "type": "debugpy",
+            "type": "java",
+            "name": "Launch Java Program",
             "request": "launch",
-            "program": "${workspaceFolder}/Python/tiro_alvo.py",
-            "console": "integratedTerminal"
-        }
+            "mainClass": ""
+        },
+        // {
+        //     "name": "Python: tiro_alvo.py",
+        //     "type": "debugpy",
+        //     "request": "launch",
+        //     "program": "${workspaceFolder}/Python/tiro_alvo.py",
+        //     "console": "integratedTerminal"
+        // }
     ]
 }

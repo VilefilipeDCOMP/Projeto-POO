@@ -20,30 +20,13 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.label = MyLabel(self.centralwidget)
+        self.label = PlayManager(self.centralwidget)
         self.label.setMinimumSize(QtCore.QSize(350, 250))
         self.label.setText("")
         self.label.setObjectName("label")
         self.verticalLayout.addWidget(self.label)
         spacerItem = QtWidgets.QSpacerItem(18, 13, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Maximum)
-        # self.centralwidget.addItem(QtWidgets.QLabel("caaaralho"))
         self.verticalLayout.addItem(spacerItem)
-        # self.horizontalLayout = QtWidgets.QHBoxLayout()
-        # self.horizontalLayout.setObjectName("horizontalLayout")
-        # spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        # self.text = QtWidgets.QLabel("caaaralho")
-        # self.text.setStyleSheet("QLabel { background-color : red; color : blue; }")
-        # self.horizontalLayout.addWidget(self.text)
-        # self.horizontalLayout.addItem(spacerItem1)
-        # self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        # self.pushButton.setMaximumSize(QtCore.QSize(60, 30))
-        # self.pushButton.setObjectName("pushButton")
-        # self.horizontalLayout.addWidget(self.pushButton)
-        # spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        # self.horizontalLayout.addItem(spacerItem2)
-        # self.verticalLayout.addLayout(self.horizontalLayout)
-        # spacerItem3 = QtWidgets.QSpacerItem(38, 13, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Maximum)
-        # self.verticalLayout.addItem(spacerItem3)
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -63,6 +46,5 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        # self.pushButton.setText(_translate("MainWindow", "Atirar"))
 
-from mylabel import MyLabel
+from PlayManager import PlayManager

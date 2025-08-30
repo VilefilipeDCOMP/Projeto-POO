@@ -8,7 +8,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, *args, obj=None, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
         self.setupUi(self)
-        self.setWindowTitle ("Tetris")
+        self.setWindowTitle ("Tetris - Python")
         self.setFixedSize(1280, 800)
         self.timer=QTimer()
         self.timer.timeout.connect(self.label.moveBlock)
@@ -16,14 +16,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.timer.start(360)
     
     def keyPressEvent(self, event): ## Switch case seria uma boa aqui
-        if event.key() == QtCore.Qt.Key_D:
-            self.label.controlarBlock("D")
-        elif event.key() == QtCore.Qt.Key_A:
-            self.label.controlarBlock("E")
-        elif event.key() == QtCore.Qt.Key_S:
-            self.label.controlarBlock("S")
-        elif event.key() == QtCore.Qt.Key_W:
-            self.label.controlarBlock("W")
+        match (event.key()):
+            case QtCore.Qt.Key_D:
+                self.label.controlarBlock("D")
+            case QtCore.Qt.Key_A:
+                self.label.controlarBlock("E")
+            case QtCore.Qt.Key_S:
+                self.label.controlarBlock("S")
+            case QtCore.Qt.Key_W:
+                self.label.controlarBlock("W")
 
     def slotAtirar (self):
         self.label.shoot()

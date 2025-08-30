@@ -2,7 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from Tetramino import *
 import random
 
-class MyLabel(QtWidgets.QLabel):
+class PlayManager(QtWidgets.QLabel):
     posInicial_x = 451 + int(451/2.5)
     posInicial_y = 70
     # posInicial_x = 451 + int(451/3)
